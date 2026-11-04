@@ -7,8 +7,8 @@ import {
 
 export type RegionLookup = Partial<Record<RegionTypeId, { code: string; name: string; aliases?: string[] }[]>>;
 
-export async function loadAllRegions(): Promise<RegionLookup> {
-  const all = await Promise.all(REGION_TYPES.map(async (t) => [t.id, await listRegions(t.id)] as const));
+export async function loadAllRegions(options: { refresh?: boolean } = {}): Promise<RegionLookup> {
+  const all = await Promise.all(REGION_TYPES.map(async (t) => [t.id, await listRegions(t.id, options)] as const));
   return Object.fromEntries(all);
 }
 
