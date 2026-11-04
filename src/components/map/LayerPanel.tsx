@@ -145,6 +145,8 @@ export function LayerPanel({ layers, entries, onUpdate, onMove, onDelete, onFiel
           </li>
         );
       })}
-    </ul>
+      </ul>
+      <p className="px-3 py-2 text-xs text-muted-foreground">Drag ⋮ to reorder — layers at the top draw on top of the map.</p>
+    </>
   );
 }

@@ -82,6 +82,18 @@ function Editor() {
     await Promise.all(updates.map((u) => updateLayer(u.id, { sort_order: u.sort_order })));
   }
 
+  async function onReorder(idsInDisplayOrder: string[]) {
+    // Display order is top-first; the map paints layers in ascending sort_order,
+    // so the top layer needs the highest sort_order.
+    const n = idsInDisplayOrder.length;
+    const updates = idsInDisplayOrder.map((id, i) => ({ id, sort_order: n - 1 - i }));
+    patchLocal((b) => ({
+      ...b,
+      layers: b.layers.map((l) => ({ ...l, sort_order: updates.find((u) => u.id === l.id)?.sort_order ?? l.sort_order })),
+    }));
+    await Promise.all(updates.map((u) => updateLayer(u.id, { sort_order: u.sort_order })));
+  }
+
   async function addLayer() {
     const name = prompt("Layer name (e.g. Programme area)");
     if (!name?.trim()) return;
@@ -148,6 +160,7 @@ function Editor() {
               onFields={setFieldsLayer}
               onAddEntry={(l) => openNewEntry(l.id)}
               onShowData={setDataLayer}
+              onReorder={onReorder}
             />
           </div>
           <div className="grid grid-cols-2 gap-2 border-t border-border p-3">
