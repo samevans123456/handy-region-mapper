@@ -26,7 +26,7 @@ export function CsvImportDialog({
   onOpenChange: (o: boolean) => void;
   layers: LayerRow[];
   fields: FieldRow[];
-  defaultLayerId?: string;
+  defaultLayerId?: string | undefined;
   onDone: () => void;
 }) {
   const [layerId, setLayerId] = useState("");
@@ -76,9 +76,9 @@ export function CsvImportDialog({
     if (regionCol === NONE) return { ok, bad };
     rows.forEach((r, i) => {
       const t = typeMode === FROM_COLUMN ? parseRegionType(r[typeCol] ?? "") : (typeMode as RegionTypeId);
-      if (!t) return bad.push({ row: i + 2, reason: `Unknown region type “${r[typeCol] ?? ""}”` });
+      if (!t) { bad.push({ row: i + 2, reason: `Unknown region type “${r[typeCol] ?? ""}”` }); return; }
       const m = matchRegion(lookup[t] ?? [], r[regionCol] ?? "");
-      if (!m) return bad.push({ row: i + 2, reason: `No ${t.toUpperCase()} match for “${r[regionCol] ?? ""}”` });
+      if (!m) { bad.push({ row: i + 2, reason: `No ${t.toUpperCase()} match for “${r[regionCol] ?? ""}”` }); return; }
       const data: Record<string, string | number> = {};
       for (const c of dataCols) {
         const v = (r[c] ?? "").trim();
@@ -97,7 +97,7 @@ export function CsvImportDialog({
   }, [rows, typeMode, typeCol, regionCol, titleCol, lookup, layerId, dataCols]);
 
   async function doImport() {
-    if (!layerId) return toast.error("Choose a layer");
+    if (!layerId) { toast.error("Choose a layer"); return; }
     setBusy(true);
     try {
       // Create any missing custom fields for the extra columns.

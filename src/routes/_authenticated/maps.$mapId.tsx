@@ -72,7 +72,9 @@ function Editor() {
     const i = sorted.findIndex((l) => l.id === id);
     const j = i + dir;
     if (j < 0 || j >= sorted.length) return;
-    [sorted[i], sorted[j]] = [sorted[j], sorted[i]];
+    const tmp = sorted[i]!;
+    sorted[i] = sorted[j]!;
+    sorted[j] = tmp;
     const updates = sorted.map((l, idx) => ({ id: l.id, sort_order: idx }));
     patchLocal((b) => ({ ...b, layers: b.layers.map((l) => ({ ...l, sort_order: updates.find((u) => u.id === l.id)!.sort_order })) }));
     await Promise.all(updates.map((u) => updateLayer(u.id, { sort_order: u.sort_order })));
@@ -83,7 +85,7 @@ function Editor() {
     if (!name?.trim()) return;
     const order = layers.length ? Math.max(...layers.map((l) => l.sort_order)) + 1 : 0;
     try {
-      await createLayer(mapId, name.trim(), LAYER_COLOURS[layers.length % LAYER_COLOURS.length], order);
+      await createLayer(mapId, name.trim(), LAYER_COLOURS[layers.length % LAYER_COLOURS.length] ?? "#7f96ff", order);
       refresh();
     } catch (e) { toast.error((e as Error).message); }
   }
@@ -102,7 +104,7 @@ function Editor() {
   }
 
   function openNewEntry(layerId?: string) {
-    if (!layers.length) return toast.error("Add a layer first");
+    if (!layers.length) { toast.error("Add a layer first"); return; }
     setEditing(null);
     setEntryLayer(layerId);
     setEntryOpen(true);

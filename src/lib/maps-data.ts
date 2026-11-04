@@ -20,9 +20,9 @@ export const LAYER_COLOURS = [
   "#607a6d", "#4852a9", "#bb7368", "#805c80", "#22352b", "#de4e44",
 ];
 
-function check<T>(res: { data: T; error: { message: string } | null }): T {
+function check<T>(res: { data: T; error: { message: string } | null }): NonNullable<T> {
   if (res.error) throw new Error(res.error.message);
-  return res.data;
+  return res.data as NonNullable<T>;
 }
 
 export const slugKey = (label: string) =>
@@ -33,7 +33,7 @@ export async function fetchMaps() {
 }
 
 export async function createMap(name: string, description?: string) {
-  return check(await supabase.from("maps").insert({ name, description }).select().single());
+  return check(await supabase.from("maps").insert({ name, description: description ?? null }).select().single());
 }
 
 export async function updateMap(id: string, patch: Partial<MapRow>) {
@@ -52,7 +52,9 @@ export interface MapBundle {
 }
 
 export async function fetchMapBundle(id: string): Promise<MapBundle> {
-  const map = check(await supabase.from("maps").select("*").eq("id", id).maybeSingle());
+  const mapRes = await supabase.from("maps").select("*").eq("id", id).maybeSingle();
+  if (mapRes.error) throw new Error(mapRes.error.message);
+  const map = mapRes.data;
   if (!map) throw new Error("Map not found");
   const layers = check(await supabase.from("layers").select("*").eq("map_id", id).order("sort_order"));
   const ids = layers.map((l) => l.id);

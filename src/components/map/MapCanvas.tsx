@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import maplibregl from "maplibre-gl";
+import * as maplibregl from "maplibre-gl";
+import type * as GeoJSON from "geojson";
 import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { loadRegions, type RegionTypeId, isRegionType } from "@/lib/regions";
@@ -41,16 +42,16 @@ export default function MapCanvas({ layers, entries, selectedIds, onSelect }: Pr
     });
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "bottom-right");
     map.on("load", () => setReady(true));
-    map.on("click", (e) => {
+    map.on("click", (e: maplibregl.MapMouseEvent) => {
       const fillIds = (map.getStyle().layers ?? [])
-        .map((l) => l.id)
-        .filter((id) => id.startsWith(PREFIX + "fill-"));
+        .map((l: { id: string }) => l.id)
+        .filter((id: string) => id.startsWith(PREFIX + "fill-"));
       const feats = map.queryRenderedFeatures(e.point, { layers: fillIds });
-      const ids = [...new Set(feats.map((f) => String(f.properties?.entryId)))];
+      const ids = [...new Set(feats.map((f: maplibregl.MapGeoJSONFeature) => String(f.properties?.["entryId"])))];
       onSelectRef.current(ids);
     });
-    map.on("mousemove", (e) => {
-      const fillIds = (map.getStyle().layers ?? []).map((l) => l.id).filter((id) => id.startsWith(PREFIX + "fill-"));
+    map.on("mousemove", (e: maplibregl.MapMouseEvent) => {
+      const fillIds = (map.getStyle().layers ?? []).map((l: { id: string }) => l.id).filter((id: string) => id.startsWith(PREFIX + "fill-"));
       const hit = fillIds.length && map.queryRenderedFeatures(e.point, { layers: fillIds }).length;
       map.getCanvas().style.cursor = hit ? "pointer" : "";
     });

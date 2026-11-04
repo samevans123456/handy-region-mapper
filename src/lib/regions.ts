@@ -1,5 +1,6 @@
 // Region types and ONS boundary data (simplified, served from /public/boundaries).
 // Browser-safe: no map library imports here.
+import type * as GeoJSON from "geojson";
 
 export type RegionTypeId = "country" | "region" | "lad" | "pcon" | "mayoral";
 

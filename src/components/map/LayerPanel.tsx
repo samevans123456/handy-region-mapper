@@ -55,7 +55,7 @@ export function LayerPanel({ layers, entries, onUpdate, onMove, onDelete, onFiel
                     max={1}
                     step={0.05}
                     defaultValue={[l.opacity]}
-                    onValueCommit={([v]) => onUpdate(l.id, { opacity: v })}
+                    onValueCommit={([v]) => v !== undefined && onUpdate(l.id, { opacity: v })}
                   />
                 </PopoverContent>
               </Popover>

@@ -24,7 +24,7 @@ export function EntryDialog({
   layers: LayerRow[];
   fields: FieldRow[];
   entry: EntryRow | null;
-  defaultLayerId?: string;
+  defaultLayerId?: string | undefined;
   onSaved: () => void;
 }) {
   const [layerId, setLayerId] = useState("");
@@ -54,7 +54,7 @@ export function EntryDialog({
   const layerFields = fields.filter((f) => f.layer_id === layerId);
 
   async function save() {
-    if (!layerId || !region) return toast.error("Choose a layer and a region");
+    if (!layerId || !region) { toast.error("Choose a layer and a region"); return; }
     setBusy(true);
     try {
       const clean: Record<string, string | number> = {};
