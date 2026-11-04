@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ViewTokenRouteImport } from './routes/view.$token'
 import { Route as AuthenticatedMapsIndexRouteImport } from './routes/_authenticated/maps.index'
 import { Route as AuthenticatedMapsMapIdRouteImport } from './routes/_authenticated/maps.$mapId'
 
@@ -29,6 +30,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ViewTokenRoute = ViewTokenRouteImport.update({
+  id: '/view/$token',
+  path: '/view/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedMapsIndexRoute = AuthenticatedMapsIndexRouteImport.update({
   id: '/maps/',
   path: '/maps/',
@@ -43,12 +49,14 @@ const AuthenticatedMapsMapIdRoute = AuthenticatedMapsMapIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/view/$token': typeof ViewTokenRoute
   '/maps/$mapId': typeof AuthenticatedMapsMapIdRoute
   '/maps/': typeof AuthenticatedMapsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/view/$token': typeof ViewTokenRoute
   '/maps/$mapId': typeof AuthenticatedMapsMapIdRoute
   '/maps': typeof AuthenticatedMapsIndexRoute
 }
@@ -57,19 +65,21 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/view/$token': typeof ViewTokenRoute
   '/_authenticated/maps/$mapId': typeof AuthenticatedMapsMapIdRoute
   '/_authenticated/maps/': typeof AuthenticatedMapsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/maps/$mapId' | '/maps/'
+  fullPaths: '/' | '/auth' | '/view/$token' | '/maps/$mapId' | '/maps/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/maps/$mapId' | '/maps'
+  to: '/' | '/auth' | '/view/$token' | '/maps/$mapId' | '/maps'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/view/$token'
     | '/_authenticated/maps/$mapId'
     | '/_authenticated/maps/'
   fileRoutesById: FileRoutesById
@@ -78,6 +88,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ViewTokenRoute: typeof ViewTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -101,6 +112,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/view/$token': {
+      id: '/view/$token'
+      path: '/view/$token'
+      fullPath: '/view/$token'
+      preLoaderRoute: typeof ViewTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/maps/': {
@@ -137,6 +155,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ViewTokenRoute: ViewTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

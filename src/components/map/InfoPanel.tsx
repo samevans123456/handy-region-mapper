@@ -28,8 +28,8 @@ export function InfoPanel({
   layers: LayerRow[];
   fields: FieldRow[];
   onClose: () => void;
-  onEdit: (e: EntryRow) => void;
-  onDelete: (e: EntryRow) => void;
+  onEdit?: (e: EntryRow) => void;
+  onDelete?: (e: EntryRow) => void;
 }) {
   const ordered = [...layers].sort((a, b) => b.sort_order - a.sort_order);
   return (

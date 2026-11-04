@@ -3,7 +3,7 @@ import { ClientOnly } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { lazy, Suspense, useState } from "react";
 import { toast } from "sonner";
-import { Plus, Upload, ListPlus, Pencil, Trash2, Table2 } from "lucide-react";
+import { Plus, Upload, ListPlus, Pencil, Trash2, Table2, Share2 } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { LayerPanel } from "@/components/map/LayerPanel";
 import { InfoPanel, FieldValue } from "@/components/map/InfoPanel";
 import { EntryDialog } from "@/components/map/EntryDialog";
+import { ShareDialog } from "@/components/map/ShareDialog";
 import { FieldsDialog } from "@/components/map/FieldsDialog";
 import { CsvImportDialog } from "@/components/map/CsvImportDialog";
 import { TableEditor } from "@/components/map/TableEditor";
@@ -51,6 +52,7 @@ function Editor() {
   const [tableOpen, setTableOpen] = useState(false);
   const [fieldsLayer, setFieldsLayer] = useState<LayerRow | null>(null);
   const [dataLayer, setDataLayer] = useState<LayerRow | null>(null);
+  const [shareOpen, setShareOpen] = useState(false);
 
   if (isLoading) return <div className="p-8 text-muted-foreground">Loading map…</div>;
   if (error || !data)
@@ -145,6 +147,9 @@ function Editor() {
           <span className="truncate">{map.name}</span>
           <Pencil className="size-3.5 shrink-0 text-muted-foreground" />
         </button>
+        <Button variant="outline" size="sm" onClick={() => setShareOpen(true)}>
+          <Share2 /> Share
+        </Button>
       </AppHeader>
       <div className="flex min-h-0 flex-1">
         <aside className="flex w-[320px] shrink-0 flex-col border-r border-border bg-card">
@@ -205,6 +210,7 @@ function Editor() {
       <CsvImportDialog open={csvOpen} onOpenChange={setCsvOpen} mapId={mapId} mapName={map.name} layers={layers} fields={fields} onDone={refresh} />
       <TableEditor open={tableOpen} onOpenChange={setTableOpen} mapId={mapId} layers={layers} fields={fields} onDone={refresh} />
       <FieldsDialog layer={fieldsLayer} fields={fields} onOpenChange={(o) => !o && setFieldsLayer(null)} onSaved={refresh} />
+      <ShareDialog open={shareOpen} onOpenChange={setShareOpen} mapId={mapId} />
 
       <Sheet open={!!dataLayer} onOpenChange={(o) => !o && setDataLayer(null)}>
         <SheetContent side="bottom" className="h-[60vh]">
