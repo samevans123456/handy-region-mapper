@@ -45,7 +45,7 @@ function Index() {
             </Button>
           </div>
         </section>
-        <section className="border border-border bg-card p-6">
+        <section className="self-start border border-border bg-card p-6">
           <h2 className="text-lg">Supported geographies</h2>
           <ul className="mt-4 space-y-3">
             {REGION_TYPES.map((r, i) => (
