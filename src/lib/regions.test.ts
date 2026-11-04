@@ -70,7 +70,7 @@ describe("county council boundaries", () => {
     for (const code of countyCodes) expect(uaCodes.has(code)).toBe(false);
   });
 
-  it("matches "Essex County Council" written as a region name", async () => {
+  it("matches Essex County Council written as a region name", async () => {
     const { readFileSync } = await import("node:fs");
     const fc = JSON.parse(readFileSync("public/boundaries/county.geojson", "utf8"));
     const list = fc.features.map((f: { properties: { code: string; name: string } }) => f.properties);
