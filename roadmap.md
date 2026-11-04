@@ -1,4 +1,6 @@
 # Roadmap
+- [ ] Default entry descriptions in editor, table, template and details box
+- [ ] Upload choice to add entries or replace all map entries, with confirmation and tests
 - [x] Downloadable Excel template with dropdowns; upload xlsx/csv; auto-create layers
 - [x] In-app editable table with paste from Excel
 - [x] Higher-resolution region boundaries (ONS BGC)
