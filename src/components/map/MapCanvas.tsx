@@ -152,5 +152,10 @@ export default function MapCanvas({ layers, entries, selectedIds, onSelect }: Pr
     for (const id of labelLayers) map.moveLayer(id);
   }, [ready, layers, entries, selectedIds, indexVersion]);
 
-  return <div ref={el} className="absolute inset-0" />;
+  // MapLibre sets position:relative on its container, so the sizing wrapper must be separate.
+  return (
+    <div className="absolute inset-0">
+      <div ref={el} className="h-full w-full" />
+    </div>
+  );
 }
