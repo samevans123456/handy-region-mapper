@@ -4,6 +4,7 @@ import { Blob as NodeBlob } from "node:buffer";
 import ExcelJS from "exceljs";
 import { listRegions, type RegionCollection } from "./regions";
 import { buildTemplate } from "./excel";
+import type { EntryRow, FieldRow, LayerRow } from "./maps-data";
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -14,6 +15,30 @@ it("includes a default description column even with no custom fields", async () 
   await workbook.xlsx.load(await blob.arrayBuffer());
   const entries = workbook.getWorksheet("Entries");
   expect(entries?.getCell("E1").value).toBe("Description");
+});
+
+it("fills every current entry, including repeated regions, descriptions and layer-specific custom data", async () => {
+  vi.stubGlobal("Blob", NodeBlob);
+  const layers = [{ id: "one", name: "Programme" }, { id: "two", name: "Partners" }] as LayerRow[];
+  const fields = [
+    { layer_id: "one", key: "notes", label: "Description" },
+    { layer_id: "one", key: "total", label: "People" },
+    { layer_id: "two", key: "participants", label: "People" },
+  ] as FieldRow[];
+  const entries: EntryRow[] = [
+    { id: "first", user_id: "owner", created_at: "2026-11-04", layer_id: "one", region_type: "ua", region_name: "Islington", region_code: "E09000019", title: "First project", data: { notes: "Long description\nSecond paragraph", total: 0 } },
+    { id: "second", user_id: "owner", created_at: "2026-11-04", layer_id: "two", region_type: "ua", region_name: "Islington", region_code: "E09000019", title: null, data: { description: "Another project", participants: 25 } },
+  ];
+  const blob = await buildTemplate({ mapName: "Current map", layers, fields, entries, lookup: {} });
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await blob.arrayBuffer());
+  const sheet = workbook.getWorksheet("Entries");
+  expect(sheet?.getRow(2).values).toEqual([undefined, "Programme", "Unitary authority", "Islington (E09000019)", "First project", "Long description\nSecond paragraph", 0]);
+  expect(sheet?.getRow(3).values).toEqual([undefined, "Partners", "Unitary authority", "Islington (E09000019)", "", "Another project", 25]);
+  expect(sheet?.getCell("C3").dataValidation.type).toBe("list");
+  const blank = await buildTemplate({ mapName: "Current map", layers, fields, lookup: {} });
+  await workbook.xlsx.load(await blank.arrayBuffer());
+  expect(workbook.getWorksheet("Entries")?.getCell("A2").value).toBeNull();
 });
 
 describe("template region freshness", () => {
