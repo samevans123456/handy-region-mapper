@@ -11,6 +11,7 @@
 
 ## Architecture rules
 - Region boundaries are static simplified GeoJSON in `public/boundaries/<type>.geojson` (properties `code`, `name`), built from ONS Open Geography Portal BGC layers with light simplification; mayoral includes GLA and dissolved LAD footprints catalogued in `src/lib/strategic-authorities.json`. Preserve existing ONS codes; additions use stable `SA-` and `PLAN-` identifiers, never invented ONS codes. Why: fast loads and compatibility with saved entries.
+- County council boundaries (`public/boundaries/county.geojson`) merge the May 2026 LAD BGC districts of the 21 two-tier counties and carry their real ONS CTYUA codes; county councils are deliberately absent from the unitary list. Why: two-tier counties are a distinct tier users select directly.
 - Strategic authority status and constituent LAD codes are source-backed catalogue metadata; proposed names explicitly carry `(proposed)` and aliases share the same geometry. The established inventory follows the supplied article's June 2026 snapshot, not a claim of live legal status. Why: planning areas must not masquerade as final boundaries or duplicate authorities.
 - Layers are categories, not region types; each `entries` row carries its own region_type/code and a region may appear many times. Why: user requirement for mixed geographies and duplicate entries.
 - MapLibre is only loaded via `React.lazy` behind `<ClientOnly>` (src/components/map/MapCanvas.tsx). Why: browser-only library breaks SSR.
