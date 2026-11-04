@@ -29,6 +29,8 @@ export const Route = createFileRoute("/_authenticated/maps/$mapId")({
       { name: "description", content: "Edit layers, entries and region data on your UK map." },
       { property: "og:title", content: "Map editor — TLG Place Mapper" },
       { property: "og:description", content: "Edit layers, entries and region data on your UK map." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Editor,

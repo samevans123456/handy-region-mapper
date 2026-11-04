@@ -42,7 +42,7 @@ export function RegionPicker({
               <CommandItem
                 key={r.code}
                 value={`${r.name} ${r.code}`}
-                keywords={r.aliases}
+                keywords={r.aliases ?? []}
                 onSelect={() => { onChange(r); setOpen(false); }}
               >
                 <Check className={cn("mr-1", value?.code === r.code ? "opacity-100" : "opacity-0")} />

@@ -1,23 +1,23 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { matchRegion } from "./regions";
+import { matchRegion, type RegionFeature } from "./regions";
 import { prepareRows } from "./bulk-import";
 
 const boundaries = JSON.parse(readFileSync("public/boundaries/mayoral.geojson", "utf8"));
-const properties = boundaries.features.map((f: { properties: Record<string, unknown> }) => f.properties);
+const properties = (boundaries.features as RegionFeature[]).map((f) => f.properties);
 
 describe("strategic authority coverage", () => {
   it("contains the twenty strategic authorities from the supplied article", () => {
-    expect(properties.filter((p: Record<string, unknown>) => p.status === "established")).toHaveLength(20);
+    expect(properties.filter((p) => p.status === "established")).toHaveLength(20);
   });
   it("contains thirteen combined authorities", () => {
-    expect(properties.filter((p: Record<string, unknown>) => p.status === "established" && p.authority_type === "CA")).toHaveLength(13);
+    expect(properties.filter((p) => p.status === "established" && p.authority_type === "CA")).toHaveLength(13);
   });
   it("contains six combined county authorities", () => {
-    expect(properties.filter((p: Record<string, unknown>) => p.status === "established" && p.authority_type === "CCA")).toHaveLength(6);
+    expect(properties.filter((p) => p.status === "established" && p.authority_type === "CCA")).toHaveLength(6);
   });
   it("contains one Greater London Authority", () => {
-    expect(properties.filter((p: Record<string, unknown>) => p.authority_type === "GLA").map((p: Record<string, unknown>) => p.code)).toEqual(["E61000001"]);
+    expect(properties.filter((p) => p.authority_type === "GLA").map((p) => p.code)).toEqual(["E61000001"]);
   });
   it("adds the four missing established authorities with their complete district footprints", () => {
     const expected = {
@@ -33,17 +33,17 @@ describe("strategic authority coverage", () => {
     }
   });
   it("keeps every pre-existing ONS authority identifier", () => {
-    expect(properties.filter((p: Record<string, unknown>) => String(p.code).startsWith("E")).map((p: Record<string, unknown>) => p.code).sort()).toEqual([
+    expect(properties.filter((p) => p.code.startsWith("E")).map((p) => p.code).sort()).toEqual([
       "E47000001", "E47000002", "E47000003", "E47000004", "E47000006", "E47000007", "E47000008", "E47000009", "E47000012", "E47000013", "E47000014", "E47000015", "E47000016", "E47000017", "E47000018", "E61000001",
     ]);
   });
   it("distinguishes all three published proposed areas from established authorities", () => {
-    expect(properties.filter((p: Record<string, unknown>) => p.status === "proposed").map((p: Record<string, unknown>) => p.name).sort()).toEqual([
+    expect(properties.filter((p) => p.status === "proposed").map((p) => p.name).sort()).toEqual([
       "Greater Essex (proposed)", "Heart of Wessex (proposed)", "Norfolk and Suffolk (proposed)",
     ]);
   });
   it("uses the submitted Heart of Wessex footprint, not unconfirmed BCP or Swindon additions", () => {
-    expect(properties.find((p: Record<string, unknown>) => p.code === "PLAN-HEART-WESSEX")?.constituent_codes).toEqual(["E06000059", "E06000066", "E06000054"]);
+    expect(properties.find((p) => p.code === "PLAN-HEART-WESSEX")?.constituent_codes).toEqual(["E06000059", "E06000066", "E06000054"]);
   });
   it("matches the user's authority shorthand and custom-code Excel values", () => {
     expect(matchRegion(properties, "Hampshire and Solent CCA")?.code).toBe("SA-HAMPSHIRE-SOLENT");

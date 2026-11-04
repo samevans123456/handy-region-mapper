@@ -18,6 +18,8 @@ export const Route = createFileRoute("/_authenticated/maps/")({
       { name: "description", content: "Your private interactive maps of the UK." },
       { property: "og:title", content: "My maps — TLG Place Mapper" },
       { property: "og:description", content: "Your private interactive maps of the UK." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: MapsPage,
