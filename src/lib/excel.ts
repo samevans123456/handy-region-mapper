@@ -128,10 +128,11 @@ const cellText = (v: unknown): string => {
   if (v instanceof Date) return v.toISOString().slice(0, 10);
   if (typeof v === "object") {
     const o = v as { text?: unknown; result?: unknown; richText?: { text: string }[]; hyperlink?: string };
+    // A hyperlink's text is only its display label, not its destination.
+    if (o.hyperlink) return o.hyperlink;
     if (o.richText) return o.richText.map((r) => r.text).join("");
     if (o.text != null) return String(o.text);
     if (o.result != null) return String(o.result);
-    if (o.hyperlink) return o.hyperlink;
   }
   return String(v);
 };
