@@ -146,6 +146,70 @@ export type Database = {
           },
         ]
       }
+      map_collaborators: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          invited_by: string | null
+          map_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          invited_by?: string | null
+          map_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          invited_by?: string | null
+          map_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "map_collaborators_map_id_fkey"
+            columns: ["map_id"]
+            isOneToOne: false
+            referencedRelation: "maps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      map_share_links: {
+        Row: {
+          created_at: string
+          id: string
+          map_id: string
+          revoked_at: string | null
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          map_id: string
+          revoked_at?: string | null
+          token: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          map_id?: string
+          revoked_at?: string | null
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "map_share_links_map_id_fkey"
+            columns: ["map_id"]
+            isOneToOne: false
+            referencedRelation: "maps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       maps: {
         Row: {
           created_at: string
@@ -178,7 +242,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      can_edit_layer: { Args: { _layer_id: string }; Returns: boolean }
+      can_edit_map: { Args: { _map_id: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
