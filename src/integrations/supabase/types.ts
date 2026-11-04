@@ -14,7 +14,165 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      entries: {
+        Row: {
+          created_at: string
+          data: Json
+          id: string
+          layer_id: string
+          region_code: string
+          region_name: string
+          region_type: string
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          data?: Json
+          id?: string
+          layer_id: string
+          region_code: string
+          region_name: string
+          region_type: string
+          title?: string | null
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          id?: string
+          layer_id?: string
+          region_code?: string
+          region_name?: string
+          region_type?: string
+          title?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entries_layer_id_fkey"
+            columns: ["layer_id"]
+            isOneToOne: false
+            referencedRelation: "layers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      field_definitions: {
+        Row: {
+          created_at: string
+          field_type: string
+          id: string
+          key: string
+          label: string
+          layer_id: string
+          sort_order: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          field_type?: string
+          id?: string
+          key: string
+          label: string
+          layer_id: string
+          sort_order?: number
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          field_type?: string
+          id?: string
+          key?: string
+          label?: string
+          layer_id?: string
+          sort_order?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "field_definitions_layer_id_fkey"
+            columns: ["layer_id"]
+            isOneToOne: false
+            referencedRelation: "layers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      layers: {
+        Row: {
+          color: string
+          created_at: string
+          id: string
+          map_id: string
+          name: string
+          opacity: number
+          show_labels: boolean
+          sort_order: number
+          user_id: string
+          visible: boolean
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          id?: string
+          map_id: string
+          name?: string
+          opacity?: number
+          show_labels?: boolean
+          sort_order?: number
+          user_id?: string
+          visible?: boolean
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          id?: string
+          map_id?: string
+          name?: string
+          opacity?: number
+          show_labels?: boolean
+          sort_order?: number
+          user_id?: string
+          visible?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "layers_map_id_fkey"
+            columns: ["map_id"]
+            isOneToOne: false
+            referencedRelation: "maps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      maps: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
