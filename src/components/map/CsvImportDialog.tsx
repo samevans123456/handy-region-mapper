@@ -13,7 +13,7 @@ import { REGION_TYPES } from "@/lib/regions";
 import { commitRows, loadAllRegions, prepareRows, type ImportMode, type RawRow, type RegionLookup } from "@/lib/bulk-import";
 import { isDescriptionLabel } from "@/lib/entry-description";
 import { buildTemplate, downloadBlob, readWorkbook } from "@/lib/excel";
-import type { FieldRow, LayerRow } from "@/lib/maps-data";
+import { fetchMapBundle, type FieldRow, type LayerRow } from "@/lib/maps-data";
 
 const NONE = "__none";
 const FROM_COLUMN = "__column";
@@ -42,6 +42,7 @@ export function CsvImportDialog({
   const [busy, setBusy] = useState(false);
   const [importMode, setImportMode] = useState<ImportMode>("add");
   const [confirmReplace, setConfirmReplace] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => { if (open) { setRows([]); setCols([]); setImportMode("add"); setConfirmReplace(false); } }, [open]);
   useEffect(() => { loadAllRegions().then(setLookup); }, []);
@@ -78,14 +79,20 @@ export function CsvImportDialog({
     });
   }
 
-  async function downloadTemplate() {
+  async function downloadTemplate(includeData: boolean) {
+    setDownloading(true);
     try {
-      const lk = await loadAllRegions({ refresh: true });
+      const [lk, bundle] = await Promise.all([
+        loadAllRegions({ refresh: true }),
+        includeData ? fetchMapBundle(mapId) : Promise.resolve(null),
+      ]);
       setLookup(lk);
-      const blob = await buildTemplate({ mapName, layers, fields, lookup: lk });
-      downloadBlob(blob, `${mapName.replace(/[^\w -]+/g, "").trim() || "map"} - entry template.xlsx`);
+      const blob = await buildTemplate({ mapName, layers: bundle?.layers ?? layers, fields: bundle?.fields ?? fields, lookup: lk, entries: bundle?.entries });
+      downloadBlob(blob, `${mapName.replace(/[^\w -]+/g, "").trim() || "map"} - ${includeData ? "current data" : "entry template"}.xlsx`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Could not build the template");
+    } finally {
+      setDownloading(false);
     }
   }
 
@@ -140,12 +147,13 @@ export function CsvImportDialog({
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader><DialogTitle>Upload a file</DialogTitle></DialogHeader>
         <div className="space-y-4">
-          <div className="flex items-start justify-between gap-4 border border-border bg-background p-3">
-            <p className="text-sm">
-              <span className="font-medium">Easiest:</span> download the Excel template. It has drop-down lists for
-              layer, region type and region, plus a column for each custom field.
-            </p>
-            <Button variant="outline" size="sm" onClick={downloadTemplate}><Download /> Template</Button>
+          <div className="space-y-3 border-b border-border pb-4">
+            <h3 className="font-medium">Download Excel template</h3>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" size="sm" disabled={downloading} onClick={() => downloadTemplate(false)}><Download /> Blank template</Button>
+              <Button variant="outline" size="sm" disabled={downloading} onClick={() => downloadTemplate(true)}><Download /> With current data</Button>
+            </div>
+            {downloading && <p role="status" className="text-sm text-muted-foreground">Preparing download…</p>}
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="csv-file">Excel (.xlsx) or CSV file</Label>

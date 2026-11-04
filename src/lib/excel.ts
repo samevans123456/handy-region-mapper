@@ -1,8 +1,8 @@
 // Excel template + reader. exceljs is loaded on demand (browser only).
-import { REGION_TYPES } from "@/lib/regions";
+import { REGION_TYPES, regionTypeLabel } from "@/lib/regions";
 import type { RegionLookup } from "@/lib/bulk-import";
-import type { FieldRow, LayerRow } from "@/lib/maps-data";
-import { isDescriptionField } from "@/lib/entry-description";
+import type { EntryRow, FieldRow, LayerRow } from "@/lib/maps-data";
+import { isDescriptionField, readDescription } from "@/lib/entry-description";
 
 const ROWS = 1000;
 const BLUE = "FF1A2792";
@@ -14,6 +14,7 @@ export async function buildTemplate(opts: {
   layers: LayerRow[];
   fields: FieldRow[];
   lookup: RegionLookup;
+  entries?: EntryRow[];
 }): Promise<Blob> {
   const ExcelJS = (await import("exceljs")).default;
   const wb = new ExcelJS.Workbook();
@@ -51,7 +52,25 @@ export async function buildTemplate(opts: {
   const nLayers = Math.max(1, opts.layers.length);
   const typesRange = `Lists!$B$2:$C$${REGION_TYPES.length + 1}`;
 
-  for (let r = 2; r <= ROWS + 1; r++) {
+  const entries = opts.entries ?? [];
+  entries.forEach((entry, index) => {
+    const layer = opts.layers.find((l) => l.id === entry.layer_id);
+    if (!layer) throw new Error("Could not find a layer for an exported entry");
+    const fields = opts.fields.filter((f) => f.layer_id === layer.id);
+    const data = (entry.data ?? {}) as Record<string, unknown>;
+    const row = ws.getRow(index + 2);
+    row.values = [
+      layer.name, regionTypeLabel(entry.region_type), `${entry.region_name} (${entry.region_code})`,
+      entry.title ?? "", readDescription(data, fields),
+      ...fieldLabels.map((label) => {
+        const field = fields.find((f) => !isDescriptionField(f) && f.label.toLowerCase() === label.toLowerCase());
+        const value = field ? data[field.key] : undefined;
+        return typeof value === "number" || typeof value === "string" ? value : value == null ? "" : JSON.stringify(value);
+      }),
+    ];
+  });
+
+  for (let r = 2; r <= Math.max(ROWS, entries.length) + 1; r++) {
     ws.getCell(r, 1).dataValidation = {
       type: "list",
       allowBlank: true,
