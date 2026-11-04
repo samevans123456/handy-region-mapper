@@ -59,6 +59,7 @@ function SharedMapPage() {
 function SharedMapMap({ bundle }: { bundle: SharedMapData }) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [visibility, setVisibility] = useState<Record<string, boolean>>({});
+  const [aboutOpen, setAboutOpen] = useState(true);
   const layers = applyViewerVisibility(bundle.layers, visibility);
   const orderedLayers = [...layers].sort((a, b) => b.sort_order - a.sort_order);
   const visibleLayerIds = new Set(layers.filter((l) => l.visible).map((l) => l.id));
@@ -70,6 +71,11 @@ function SharedMapMap({ bundle }: { bundle: SharedMapData }) {
         <BrandMark />
         <div className="min-w-0 flex-1 truncate font-medium">{bundle.map.name}</div>
         <span className="shrink-0 text-sm text-muted-foreground">Read-only view</span>
+        {!aboutOpen && (
+          <Button variant="outline" size="sm" onClick={() => setAboutOpen(true)}>
+            <Info /> About this map
+          </Button>
+        )}
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" size="sm"><Layers /> Layers</Button>
