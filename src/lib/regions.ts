@@ -17,7 +17,7 @@ export const REGION_TYPES: RegionTypeDef[] = [
   { id: "lad", label: "Local authority", short: "LA", source: "ONS Local Authority Districts (May 2026)" },
   { id: "pcon", label: "Westminster constituency", short: "Constituency", source: "ONS Westminster Constituencies (Jul 2024)" },
   { id: "mayoral", label: "Strategic Authority", short: "SA", source: "20 strategic authorities (June 2026 article inventory) plus published proposed areas; ONS BGC district boundaries" },
-  { id: "ua", label: "Unitary authority", short: "UA", source: "ONS Local Authority Districts (May 2026): English unitaries plus Welsh, Scottish and NI councils" },
+  { id: "ua", label: "Unitary authority", short: "UA", source: "ONS Local Authority Districts (May 2026): English unitaries, London and metropolitan boroughs, plus Welsh, Scottish and NI councils" },
 ];
 
 export const regionTypeLabel = (id: string) =>
