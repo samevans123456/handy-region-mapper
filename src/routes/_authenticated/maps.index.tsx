@@ -2,13 +2,14 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Users } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/integrations/supabase/client";
 import { createMap, deleteMap, fetchMaps } from "@/lib/maps-data";
 
 export const Route = createFileRoute("/_authenticated/maps/")({
@@ -29,9 +30,16 @@ function MapsPage() {
   const qc = useQueryClient();
   const navigate = useNavigate();
   const { data: maps, isLoading } = useQuery({ queryKey: ["maps"], queryFn: fetchMaps });
+  const { data: uid } = useQuery({
+    queryKey: ["me"],
+    queryFn: async () => (await supabase.auth.getUser()).data.user?.id ?? null,
+  });
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
+
+  const owned = (maps ?? []).filter((m) => m.user_id === uid);
+  const shared = (maps ?? []).filter((m) => m.user_id !== uid);
 
   const create = useMutation({
     mutationFn: () => createMap(name.trim() || "Untitled map", desc.trim() || undefined),
@@ -62,10 +70,10 @@ function MapsPage() {
         </div>
         <div className="mt-8 border-t border-border">
           {isLoading && <p className="py-6 text-muted-foreground">Loading…</p>}
-          {maps?.length === 0 && (
+          {owned.length === 0 && !isLoading && (
             <p className="py-10 text-muted-foreground">No maps yet. Create your first one to get started.</p>
           )}
-          {maps?.map((m) => (
+          {owned.map((m) => (
             <div key={m.id} className="flex items-center gap-4 border-b border-border py-4">
               <Link to="/maps/$mapId" params={{ mapId: m.id }} className="min-w-0 flex-1">
                 <div className="font-medium text-primary hover:underline">{m.name}</div>
@@ -85,6 +93,28 @@ function MapsPage() {
             </div>
           ))}
         </div>
+
+        {shared.length > 0 && (
+          <div className="mt-10 border-t border-border pt-6">
+            <h2 className="flex items-center gap-2 text-xl">
+              <Users className="size-5" /> Shared with you
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">Maps owned by others where you can add and edit entries.</p>
+            <div className="mt-4">
+              {shared.map((m) => (
+                <div key={m.id} className="flex items-center gap-4 border-b border-border py-4">
+                  <Link to="/maps/$mapId" params={{ mapId: m.id }} className="min-w-0 flex-1">
+                    <div className="font-medium text-primary hover:underline">{m.name}</div>
+                    {m.description && <div className="truncate text-sm text-muted-foreground">{m.description}</div>}
+                  </Link>
+                  <span className="text-sm text-muted-foreground">
+                    Updated {new Date(m.updated_at).toLocaleDateString("en-GB")}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </main>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
