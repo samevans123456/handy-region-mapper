@@ -123,7 +123,7 @@ export function EntryDialog({
             <div key={f.id} className="space-y-1.5">
               <Label htmlFor={`f-${f.id}`}>{f.label}</Label>
               {f.field_type === "longtext" ? (
-                <Textarea id={`f-${f.id}`} value={data[f.key] ?? ""} onChange={(e) => setData({ ...data, [f.key]: e.target.value })} />
+                <Textarea id={`f-${f.id}`} rows={7} className="min-h-40 resize-y leading-relaxed" value={data[f.key] ?? ""} onChange={(e) => setData({ ...data, [f.key]: e.target.value })} />
               ) : (
                 <Input
                   id={`f-${f.id}`}
