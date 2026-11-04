@@ -5,7 +5,7 @@ import {
   type EntryInput, type FieldRow, type LayerRow,
 } from "@/lib/maps-data";
 
-export type RegionLookup = Partial<Record<RegionTypeId, { code: string; name: string }[]>>;
+export type RegionLookup = Partial<Record<RegionTypeId, { code: string; name: string; aliases?: string[] }[]>>;
 
 export async function loadAllRegions(): Promise<RegionLookup> {
   const all = await Promise.all(REGION_TYPES.map(async (t) => [t.id, await listRegions(t.id)] as const));
