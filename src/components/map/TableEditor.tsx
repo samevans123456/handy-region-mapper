@@ -6,9 +6,10 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { REGION_TYPES, parseRegionType } from "@/lib/regions";
 import { commitRows, loadAllRegions, prepareRows, type RegionLookup } from "@/lib/bulk-import";
 import type { FieldRow, LayerRow } from "@/lib/maps-data";
+import { isDescriptionField, isDescriptionLabel } from "@/lib/entry-description";
 
 type GridRow = string[]; // [layer, type, region, label, ...fields]
-const FIXED = ["Layer", "Region type", "Region", "Label"];
+const FIXED = ["Layer", "Region type", "Region", "Label", "Description"];
 const emptyRow = (n: number): GridRow => Array.from({ length: n }, () => "");
 
 export function TableEditor({
@@ -31,7 +32,7 @@ export function TableEditor({
   useEffect(() => {
     if (!open) return;
     const labels: string[] = [];
-    for (const f of fields) if (!labels.some((l) => l.toLowerCase() === f.label.toLowerCase())) labels.push(f.label);
+    for (const f of fields) if (!isDescriptionField(f) && !labels.some((l) => l.toLowerCase() === f.label.toLowerCase())) labels.push(f.label);
     setExtra(labels);
     const first = layers[0]?.name ?? "";
     setRows(Array.from({ length: 10 }, () => { const r = emptyRow(FIXED.length + labels.length); r[0] = first; r[1] = "Local authority"; return r; }));
@@ -63,7 +64,8 @@ export function TableEditor({
         while (out.length <= target) out.push(emptyRow(width));
         line.forEach((val, dc) => {
           const c = ci + dc;
-          if (c < width) out[target]![c] = val.trim();
+          const targetRow = out[target];
+          if (c < width && targetRow) targetRow[c] = val.trim();
         });
       });
       return out;
@@ -73,6 +75,7 @@ export function TableEditor({
   function addColumn() {
     const name = prompt("New field name");
     if (!name?.trim()) return;
+    if (isDescriptionLabel(name) || cols.some((c) => c.toLowerCase() === name.trim().toLowerCase())) { toast.error("That column already exists"); return; }
     setExtra((x) => [...x, name.trim()]);
     setRows((rs) => rs.map((r) => [...r, ""]));
   }
@@ -81,7 +84,7 @@ export function TableEditor({
     const filled = rows.filter((r) => !isBlank(r));
     const raw = filled.map((r) => ({
       layer: r[0] ?? "", type: r[1] ?? "", region: r[2] ?? "", label: r[3] ?? "",
-      data: Object.fromEntries(extra.map((label, i) => [label, r[4 + i] ?? ""])),
+      data: { Description: r[4] ?? "", ...Object.fromEntries(extra.map((label, i) => [label, r[FIXED.length + i] ?? ""])) },
     }));
     const { ok, bad } = prepareRows(raw, lookup);
     if (bad.length) { toast.error(`Fix ${bad.length} row(s) marked in red first`); return; }

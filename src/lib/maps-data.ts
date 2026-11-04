@@ -99,6 +99,10 @@ export async function insertEntries(rows: EntryInput[]) {
     check(await supabase.from("entries").insert(rows.slice(i, i + 500)));
   }
 }
+export async function replaceMapEntries(mapId: string, rows: EntryInput[]) {
+  if (!rows.length) throw new Error("Replacement requires at least one valid entry");
+  return check(await supabase.rpc("replace_map_entries", { _map_id: mapId, _entries: rows }));
+}
 export async function updateEntry(id: string, patch: Partial<EntryInput>) {
   check(await supabase.from("entries").update(patch).eq("id", id));
 }

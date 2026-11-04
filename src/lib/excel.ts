@@ -2,6 +2,7 @@
 import { REGION_TYPES } from "@/lib/regions";
 import type { RegionLookup } from "@/lib/bulk-import";
 import type { FieldRow, LayerRow } from "@/lib/maps-data";
+import { isDescriptionField } from "@/lib/entry-description";
 
 const ROWS = 1000;
 const BLUE = "FF1A2792";
@@ -19,14 +20,15 @@ export async function buildTemplate(opts: {
   wb.creator = "TLG Place Mapper";
 
   const fieldLabels: string[] = [];
-  for (const f of opts.fields) if (!fieldLabels.some((l) => l.toLowerCase() === f.label.toLowerCase())) fieldLabels.push(f.label);
-  const headers = ["Layer", "Region type", "Region", "Label", ...fieldLabels];
+  for (const f of opts.fields) if (!isDescriptionField(f) && !fieldLabels.some((l) => l.toLowerCase() === f.label.toLowerCase())) fieldLabels.push(f.label);
+  const headers = ["Layer", "Region type", "Region", "Label", "Description", ...fieldLabels];
 
   const ws = wb.addWorksheet("Entries", { views: [{ state: "frozen", ySplit: 1 }] });
   const help = wb.addWorksheet("How to use");
   const lists = wb.addWorksheet("Lists", { state: "veryHidden" });
 
-  ws.columns = headers.map((h, i) => ({ header: h, key: `c${i}`, width: i === 2 ? 44 : i < 2 ? 28 : 20 }));
+  ws.columns = headers.map((h, i) => ({ header: h, key: `c${i}`, width: i === 4 ? 70 : i === 2 ? 44 : i < 2 ? 28 : 20 }));
+  ws.getColumn(5).alignment = { wrapText: true, vertical: "top" };
   const head = ws.getRow(1);
   head.font = { name: "Arial", bold: true, color: { argb: BG } };
   head.fill = { type: "pattern", pattern: "solid", fgColor: { argb: BLUE } };
@@ -86,9 +88,9 @@ export async function buildTemplate(opts: {
     "2. Layer: pick an existing layer or type a new name. New layers are created when you upload.",
     "3. Region type: pick from the list. Region: then pick from the list (it changes with the region type).",
     "4. Label is optional – it replaces the region name on the map.",
-    "5. Extra columns are custom fields. Add new columns and they become new fields on upload.",
+    "5. Description is optional and appears in the region details box. Extra columns are custom fields.",
     "6. The same region can appear on as many rows as you like.",
-    "7. Save, then use “Upload file” in the map editor.",
+    "7. Save, then upload in the map editor. Choose to add entries or replace all entries in this map.",
     "",
     "Boundaries: Office for National Statistics, Open Geography Portal. Test, Learn, Grow.",
   ];

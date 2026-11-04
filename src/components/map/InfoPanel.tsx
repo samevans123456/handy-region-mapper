@@ -2,6 +2,7 @@ import { Pencil, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { regionTypeLabel } from "@/lib/regions";
 import type { EntryRow, FieldRow, LayerRow } from "@/lib/maps-data";
+import { isDescriptionField, isDescriptionLabel, readDescription } from "@/lib/entry-description";
 
 export function FieldValue({ field, value }: { field?: FieldRow; value: unknown }) {
   if (value == null || value === "") return <span className="text-muted-foreground">—</span>;
@@ -45,7 +46,8 @@ export function InfoPanel({
         {ordered.map((layer) => {
           const items = entries.filter((e) => e.layer_id === layer.id);
           if (!items.length) return null;
-          const lf = fields.filter((f) => f.layer_id === layer.id);
+          const allFields = fields.filter((f) => f.layer_id === layer.id);
+          const lf = allFields.filter((f) => !isDescriptionField(f));
           return (
             <section key={layer.id} className="border-b border-border px-5 py-5">
               <div className="mb-4 flex items-center gap-2 text-sm font-semibold">
@@ -55,7 +57,8 @@ export function InfoPanel({
               <div className="divide-y divide-border">
                 {items.map((e) => {
                   const data = (e.data ?? {}) as Record<string, unknown>;
-                  const extraKeys = Object.keys(data).filter((k) => !lf.some((f) => f.key === k));
+                  const description = readDescription(data, allFields);
+                  const extraKeys = Object.keys(data).filter((k) => !isDescriptionLabel(k) && !allFields.some((f) => f.key === k));
                   return (
                     <div key={e.id} className="py-4 first:pt-0 last:pb-0">
                       <div className="flex items-start gap-2">
@@ -68,6 +71,12 @@ export function InfoPanel({
                          {onEdit && <Button variant="ghost" size="icon" className="shrink-0" aria-label="Edit entry" onClick={() => onEdit(e)}><Pencil /></Button>}
                          {onDelete && <Button variant="ghost" size="icon" className="shrink-0" aria-label="Delete entry" onClick={() => onDelete(e)}><Trash2 /></Button>}
                       </div>
+                      {description && (
+                        <dl className="mt-5 space-y-2">
+                          <dt className="text-sm font-medium text-muted-foreground">Description</dt>
+                          <dd className="whitespace-pre-wrap break-words text-base leading-7">{description}</dd>
+                        </dl>
+                      )}
                       {(lf.length > 0 || extraKeys.length > 0) && (
                         <dl className="mt-5 space-y-4 text-sm">
                           {lf.map((f) => {

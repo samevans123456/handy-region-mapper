@@ -1,9 +1,12 @@
 // Shared bulk-entry logic for file uploads (CSV/Excel) and the in-app table editor.
 import { REGION_TYPES, listRegions, matchRegion, parseRegionType, type RegionTypeId } from "@/lib/regions";
 import {
-  LAYER_COLOURS, createLayer, insertEntries, saveFields, slugKey,
+  LAYER_COLOURS, createLayer, insertEntries, replaceMapEntries, saveFields, slugKey,
   type EntryInput, type FieldRow, type LayerRow,
 } from "@/lib/maps-data";
+import { descriptionKey, isDescriptionLabel } from "@/lib/entry-description";
+
+export type ImportMode = "add" | "replace";
 
 export type RegionLookup = Partial<Record<RegionTypeId, { code: string; name: string; aliases?: string[] }[]>>;
 
@@ -55,7 +58,8 @@ export function prepareRows(rows: RawRow[], lookup: RegionLookup) {
 const sameName = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase();
 
 /** Creates missing layers and fields, then inserts the entries. */
-export async function commitRows(mapId: string, layers: LayerRow[], fields: FieldRow[], rows: PreparedRow[]) {
+export async function commitRows(mapId: string, layers: LayerRow[], fields: FieldRow[], rows: PreparedRow[], mode: ImportMode = "add") {
+  if (!rows.length) throw new Error("At least one valid entry is required");
   const layerIds = new Map<string, string>();
   const created: string[] = [];
   let order = layers.length ? Math.max(...layers.map((l) => l.sort_order)) + 1 : 0;
@@ -75,7 +79,8 @@ export async function commitRows(mapId: string, layers: LayerRow[], fields: Fiel
   const entries: EntryInput[] = [];
   const byLayer = new Map<string, PreparedRow[]>();
   for (const r of rows) {
-    const id = layerIds.get(r.layerName.toLowerCase())!;
+    const id = layerIds.get(r.layerName.toLowerCase());
+    if (!id) throw new Error("Could not find the entry's layer");
     byLayer.set(id, [...(byLayer.get(id) ?? []), r]);
   }
   for (const [layerId, lrows] of byLayer) {
@@ -84,7 +89,7 @@ export async function commitRows(mapId: string, layers: LayerRow[], fields: Fiel
     for (const r of lrows) for (const [k, v] of Object.entries(r.data)) if (v.trim()) labels.add(k);
     const match = (label: string) => existing.find((f) => sameName(f.label, label) || f.key === slugKey(label));
     const newFields = [...labels]
-      .filter((label) => !match(label))
+      .filter((label) => !isDescriptionLabel(label) && !match(label))
       .map((label) => ({
         key: slugKey(label),
         label,
@@ -106,8 +111,8 @@ export async function commitRows(mapId: string, layers: LayerRow[], fields: Fiel
       for (const [label, raw] of Object.entries(r.data)) {
         const v = raw.trim();
         if (!v) continue;
-        const key = match(label)?.key ?? slugKey(label);
-        data[key] = types.get(key) === "number" && !isNaN(Number(v)) ? Number(v) : v;
+        const key = isDescriptionLabel(label) ? descriptionKey(existing) : match(label)?.key ?? slugKey(label);
+        data[key] = !isDescriptionLabel(label) && types.get(key) === "number" && !isNaN(Number(v)) ? Number(v) : v;
       }
       entries.push({
         layer_id: layerId,
@@ -119,6 +124,7 @@ export async function commitRows(mapId: string, layers: LayerRow[], fields: Fiel
       });
     }
   }
-  await insertEntries(entries);
+  if (mode === "replace") await replaceMapEntries(mapId, entries);
+  else await insertEntries(entries);
   return { created, count: entries.length };
 }

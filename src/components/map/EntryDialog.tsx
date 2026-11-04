@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RegionPicker } from "./RegionPicker";
 import { REGION_TYPES, type RegionTypeId, isRegionType } from "@/lib/regions";
 import { insertEntries, updateEntry, type EntryRow, type FieldRow, type LayerRow } from "@/lib/maps-data";
+import { descriptionKey, isDescriptionField, readDescription } from "@/lib/entry-description";
 
 export function EntryDialog({
   open,
@@ -31,6 +32,7 @@ export function EntryDialog({
   const [type, setType] = useState<RegionTypeId>("lad");
   const [region, setRegion] = useState<{ code: string; name: string } | null>(null);
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [data, setData] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
 
@@ -42,22 +44,26 @@ export function EntryDialog({
       setRegion({ code: entry.region_code, name: entry.region_name });
       setTitle(entry.title ?? "");
       const d = (entry.data ?? {}) as Record<string, unknown>;
+      setDescription(readDescription(d, fields.filter((f) => f.layer_id === entry.layer_id)));
       setData(Object.fromEntries(Object.entries(d).map(([k, v]) => [k, v == null ? "" : String(v)])));
     } else {
       setLayerId(defaultLayerId ?? layers[0]?.id ?? "");
       setRegion(null);
       setTitle("");
+      setDescription("");
       setData({});
     }
-  }, [open, entry, defaultLayerId, layers]);
+  }, [open, entry, defaultLayerId, layers, fields]);
 
-  const layerFields = fields.filter((f) => f.layer_id === layerId);
+  const allLayerFields = fields.filter((f) => f.layer_id === layerId);
+  const layerFields = allLayerFields.filter((f) => !isDescriptionField(f));
 
   async function save() {
     if (!layerId || !region) { toast.error("Choose a layer and a region"); return; }
     setBusy(true);
     try {
       const clean: Record<string, string | number> = {};
+      if (description.trim()) clean[descriptionKey(allLayerFields)] = description.trim();
       for (const f of layerFields) {
         const v = data[f.key]?.trim();
         if (!v) continue;
@@ -117,6 +123,10 @@ export function EntryDialog({
           <div className="space-y-1.5">
             <Label htmlFor="entry-title">Label (optional)</Label>
             <Input id="entry-title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Shown on the map instead of the region name" />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="entry-description">Description (optional)</Label>
+            <Textarea id="entry-description" rows={7} className="min-h-40 resize-y leading-relaxed" value={description} onChange={(e) => setDescription(e.target.value)} />
           </div>
           {layerFields.length > 0 && <div className="border-t border-border pt-4 text-sm font-medium">Custom fields</div>}
           {layerFields.map((f) => (
