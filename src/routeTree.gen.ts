@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedMapsIndexRouteImport } from './routes/_authenticated/maps.index'
+import { Route as AuthenticatedMapsMapIdRouteImport } from './routes/_authenticated/maps.$mapId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -33,15 +34,22 @@ const AuthenticatedMapsIndexRoute = AuthenticatedMapsIndexRouteImport.update({
   path: '/maps/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedMapsMapIdRoute = AuthenticatedMapsMapIdRouteImport.update({
+  id: '/maps/$mapId',
+  path: '/maps/$mapId',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/maps/$mapId': typeof AuthenticatedMapsMapIdRoute
   '/maps/': typeof AuthenticatedMapsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/maps/$mapId': typeof AuthenticatedMapsMapIdRoute
   '/maps': typeof AuthenticatedMapsIndexRoute
 }
 export interface FileRoutesById {
@@ -49,14 +57,21 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/maps/$mapId': typeof AuthenticatedMapsMapIdRoute
   '/_authenticated/maps/': typeof AuthenticatedMapsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/maps/'
+  fullPaths: '/' | '/auth' | '/maps/$mapId' | '/maps/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/maps'
-  id: '__root__' | '/' | '/_authenticated' | '/auth' | '/_authenticated/maps/'
+  to: '/' | '/auth' | '/maps/$mapId' | '/maps'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/maps/$mapId'
+    | '/_authenticated/maps/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -95,14 +110,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMapsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/maps/$mapId': {
+      id: '/_authenticated/maps/$mapId'
+      path: '/maps/$mapId'
+      fullPath: '/maps/$mapId'
+      preLoaderRoute: typeof AuthenticatedMapsMapIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedMapsMapIdRoute: typeof AuthenticatedMapsMapIdRoute
   AuthenticatedMapsIndexRoute: typeof AuthenticatedMapsIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedMapsMapIdRoute: AuthenticatedMapsMapIdRoute,
   AuthenticatedMapsIndexRoute: AuthenticatedMapsIndexRoute,
 }
 
