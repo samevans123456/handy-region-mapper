@@ -4,11 +4,25 @@ import { regionTypeLabel } from "@/lib/regions";
 import type { EntryRow, FieldRow, LayerRow } from "@/lib/maps-data";
 import { isDescriptionField, isDescriptionLabel, readDescription } from "@/lib/entry-description";
 
+export function externalLink(value: string): string | null {
+  const trimmed = value.trim();
+  const candidate = /^www\./i.test(trimmed) ? `https://${trimmed}` : trimmed;
+  try {
+    const url = new URL(candidate);
+    return (url.protocol === "https:" || url.protocol === "http:") && url.hostname ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
 export function FieldValue({ field, value }: { field?: FieldRow; value: unknown }) {
   if (value == null || value === "") return <span className="text-muted-foreground">—</span>;
   const s = String(value);
-  if (field?.field_type === "link" || /^https?:\/\//.test(s))
-    return <a href={s} target="_blank" rel="noreferrer" className="break-all text-primary underline">{s}</a>;
+  const href = externalLink(s);
+  if (href)
+    return <a href={href} target="_blank" rel="noopener noreferrer" className="break-all text-primary underline">{s}</a>;
+  if (field?.field_type === "link")
+    return <span className="whitespace-pre-wrap break-words">{s}<span className="mt-1 block text-muted-foreground">No web address provided</span></span>;
   if (field?.field_type === "number" && !isNaN(Number(s))) return <span>{Number(s).toLocaleString("en-GB")}</span>;
   if (field?.field_type === "date") {
     const d = new Date(s);
