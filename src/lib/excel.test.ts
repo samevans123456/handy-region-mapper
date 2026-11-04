@@ -18,8 +18,8 @@ it("imports embedded Excel hyperlink destinations instead of their display filen
   const buffer = await workbook.xlsx.writeBuffer();
   const file = { arrayBuffer: async () => buffer } as File;
   const result = await readWorkbook(file);
-  expect(result.rows[0]?.Document).toBe("https://example.org/documents/essex.pdf");
-  expect(result.rows[0]?.Region).toBe("Essex");
+  expect(result.rows[0]?.["Document"]).toBe("https://example.org/documents/essex.pdf");
+  expect(result.rows[0]?.["Region"]).toBe("Essex");
 });
 
 it("includes a default description column even with no custom fields", async () => {
