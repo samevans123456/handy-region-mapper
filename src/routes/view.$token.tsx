@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { InfoPanel } from "@/components/map/InfoPanel";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Layers } from "lucide-react";
+import { Info, Layers } from "lucide-react";
+import { AboutPanel } from "@/components/map/AboutPanel";
 import { applyViewerVisibility } from "@/lib/viewer-layers";
 import { sharedMapQueryOptions, type SharedMapData } from "@/lib/sharing.functions";
 
@@ -58,6 +59,7 @@ function SharedMapPage() {
 function SharedMapMap({ bundle }: { bundle: SharedMapData }) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [visibility, setVisibility] = useState<Record<string, boolean>>({});
+  const [aboutOpen, setAboutOpen] = useState(true);
   const layers = applyViewerVisibility(bundle.layers, visibility);
   const orderedLayers = [...layers].sort((a, b) => b.sort_order - a.sort_order);
   const visibleLayerIds = new Set(layers.filter((l) => l.visible).map((l) => l.id));
@@ -69,6 +71,11 @@ function SharedMapMap({ bundle }: { bundle: SharedMapData }) {
         <BrandMark />
         <div className="min-w-0 flex-1 truncate font-medium">{bundle.map.name}</div>
         <span className="shrink-0 text-sm text-muted-foreground">Read-only view</span>
+        {!aboutOpen && (
+          <Button variant="outline" size="sm" onClick={() => setAboutOpen(true)}>
+            <Info /> About this map
+          </Button>
+        )}
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" size="sm"><Layers /> Layers</Button>
@@ -107,6 +114,16 @@ function SharedMapMap({ bundle }: { bundle: SharedMapData }) {
             />
           </Suspense>
         </ClientOnly>
+        {aboutOpen && (
+          <AboutPanel
+            layers={orderedLayers}
+            onToggle={(layerId, visible) => {
+              setVisibility((prev) => ({ ...prev, [layerId]: visible }));
+              setSelectedIds([]);
+            }}
+            onDismiss={() => setAboutOpen(false)}
+          />
+        )}
         {selectedEntries.length > 0 && (
           <InfoPanel
             entries={selectedEntries}
