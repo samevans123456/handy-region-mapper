@@ -16,7 +16,7 @@ export const REGION_TYPES: RegionTypeDef[] = [
   { id: "region", label: "English region", short: "Region", source: "ONS Regions (Dec 2025)" },
   { id: "lad", label: "Local authority", short: "LA", source: "ONS Local Authority Districts (May 2026)" },
   { id: "pcon", label: "Westminster constituency", short: "Constituency", source: "ONS Westminster Constituencies (Jul 2024)" },
-  { id: "mayoral", label: "Mayoral / combined authority", short: "MSA", source: "20 strategic authorities (June 2026 article inventory) plus published proposed areas; ONS BGC district boundaries" },
+  { id: "mayoral", label: "Strategic Authority", short: "SA", source: "20 strategic authorities (June 2026 article inventory) plus published proposed areas; ONS BGC district boundaries" },
 ];
 
 export const regionTypeLabel = (id: string) =>
