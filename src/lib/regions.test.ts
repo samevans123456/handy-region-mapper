@@ -30,6 +30,9 @@ describe("parseRegionType", () => {
     expect(parseRegionType("Strategic Authority")).toBe("mayoral");
     expect(parseRegionType("Mayoral / combined authority")).toBe("mayoral");
     expect(parseRegionType("Unitary authority")).toBe("ua");
+    expect(parseRegionType("County council")).toBe("county");
+    expect(parseRegionType("County")).toBe("county");
+    expect(parseRegionType("Combined county authority")).toBe("mayoral");
     expect(parseRegionType("Country")).toBe("country");
   });
 });
