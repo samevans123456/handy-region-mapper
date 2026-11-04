@@ -244,6 +244,10 @@ export type Database = {
     Functions: {
       can_edit_layer: { Args: { _layer_id: string }; Returns: boolean }
       can_edit_map: { Args: { _map_id: string }; Returns: boolean }
+      replace_map_entries: {
+        Args: { _entries: Json; _map_id: string }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never
