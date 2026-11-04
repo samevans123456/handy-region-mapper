@@ -62,8 +62,8 @@ export function InfoPanel({
                             {e.title ? `${e.region_name} · ` : ""}{regionTypeLabel(e.region_type)} · {e.region_code}
                           </div>
                         </div>
-                        <Button variant="ghost" size="icon" aria-label="Edit entry" onClick={() => onEdit(e)}><Pencil /></Button>
-                        <Button variant="ghost" size="icon" aria-label="Delete entry" onClick={() => onDelete(e)}><Trash2 /></Button>
+                        {onEdit && <Button variant="ghost" size="icon" aria-label="Edit entry" onClick={() => onEdit(e)}><Pencil /></Button>}
+                        {onDelete && <Button variant="ghost" size="icon" aria-label="Delete entry" onClick={() => onDelete(e)}><Trash2 /></Button>}
                       </div>
                       {(lf.length > 0 || extraKeys.length > 0) && (
                         <dl className="mt-2 space-y-1.5 text-sm">
