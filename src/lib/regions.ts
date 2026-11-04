@@ -37,10 +37,10 @@ export interface RegionCollection {
 
 const cache = new Map<RegionTypeId, Promise<RegionCollection>>();
 
-export function loadRegions(type: RegionTypeId): Promise<RegionCollection> {
-  let p = cache.get(type);
+export function loadRegions(type: RegionTypeId, options: { refresh?: boolean } = {}): Promise<RegionCollection> {
+  let p = options.refresh ? undefined : cache.get(type);
   if (!p) {
-    p = fetch(`/boundaries/${type}.geojson`).then((r) => {
+    p = fetch(`/boundaries/${type}.geojson`, { cache: "no-cache" }).then((r) => {
       if (!r.ok) throw new Error(`Could not load ${type} boundaries`);
       return r.json();
     });
@@ -50,8 +50,8 @@ export function loadRegions(type: RegionTypeId): Promise<RegionCollection> {
   return p;
 }
 
-export async function listRegions(type: RegionTypeId) {
-  const fc = await loadRegions(type);
+export async function listRegions(type: RegionTypeId, options: { refresh?: boolean } = {}) {
+  const fc = await loadRegions(type, options);
   return fc.features
     .map((f) => ({ code: f.properties.code, name: f.properties.name, aliases: f.properties.aliases ?? [] }))
     .sort((a, b) => a.name.localeCompare(b.name));

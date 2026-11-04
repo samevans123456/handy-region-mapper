@@ -16,3 +16,4 @@
 - MapLibre is only loaded via `React.lazy` behind `<ClientOnly>` (src/components/map/MapCanvas.tsx). Why: browser-only library breaks SSR.
 - All tables carry `user_id` with owner-only RLS; app reads/writes via the browser client. Why: simple private-per-user maps.
 - Bulk entry (file upload and table editor) goes through `src/lib/bulk-import.ts` (prepareRows/commitRows), which auto-creates missing layers and fields. Why: one matching/commit path for every input method.
+- Template downloads refresh the shared region lookup and boundary requests revalidate HTTP caches. Why: an open editor must not export outdated region choices after boundary updates.

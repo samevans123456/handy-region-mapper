@@ -75,7 +75,8 @@ export function CsvImportDialog({
 
   async function downloadTemplate() {
     try {
-      const lk = Object.keys(lookup).length ? lookup : await loadAllRegions();
+      const lk = await loadAllRegions({ refresh: true });
+      setLookup(lk);
       const blob = await buildTemplate({ mapName, layers, fields, lookup: lk });
       downloadBlob(blob, `${mapName.replace(/[^\w -]+/g, "").trim() || "map"} - entry template.xlsx`);
     } catch (e) {
