@@ -114,6 +114,16 @@ function SharedMapMap({ bundle }: { bundle: SharedMapData }) {
             />
           </Suspense>
         </ClientOnly>
+        {aboutOpen && (
+          <AboutPanel
+            layers={orderedLayers}
+            onToggle={(layerId, visible) => {
+              setVisibility((prev) => ({ ...prev, [layerId]: visible }));
+              setSelectedIds([]);
+            }}
+            onDismiss={() => setAboutOpen(false)}
+          />
+        )}
         {selectedEntries.length > 0 && (
           <InfoPanel
             entries={selectedEntries}
