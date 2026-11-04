@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Blank or current-data Excel downloads, retaining dropdowns, descriptions and custom fields (33 saved entries downloaded; tests passed)
 - [x] Default entry descriptions in editor, table, template and details box (tests and description edit verified)
 - [x] Upload choice to add entries or replace all map entries, with confirmation and tests (separate test map verified and removed)
 - [x] Downloadable Excel template with dropdowns; upload xlsx/csv; auto-create layers

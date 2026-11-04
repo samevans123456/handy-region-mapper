@@ -87,7 +87,7 @@ export function CsvImportDialog({
         includeData ? fetchMapBundle(mapId) : Promise.resolve(null),
       ]);
       setLookup(lk);
-      const blob = await buildTemplate({ mapName, layers: bundle?.layers ?? layers, fields: bundle?.fields ?? fields, lookup: lk, entries: bundle?.entries });
+      const blob = await buildTemplate({ mapName, layers: bundle?.layers ?? layers, fields: bundle?.fields ?? fields, lookup: lk, entries: bundle?.entries ?? [] });
       downloadBlob(blob, `${mapName.replace(/[^\w -]+/g, "").trim() || "map"} - ${includeData ? "current data" : "entry template"}.xlsx`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Could not build the template");

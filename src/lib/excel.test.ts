@@ -25,10 +25,10 @@ it("fills every current entry, including repeated regions, descriptions and laye
     { layer_id: "one", key: "total", label: "People" },
     { layer_id: "two", key: "participants", label: "People" },
   ] as FieldRow[];
-  const entries = [
-    { layer_id: "one", region_type: "ua", region_name: "Islington", region_code: "E09000019", title: "First project", data: { notes: "Long description\nSecond paragraph", total: 0 } },
-    { layer_id: "two", region_type: "ua", region_name: "Islington", region_code: "E09000019", title: null, data: { description: "Another project", participants: 25 } },
-  ] as EntryRow[];
+  const entries: EntryRow[] = [
+    { id: "first", user_id: "owner", created_at: "2026-11-04", layer_id: "one", region_type: "ua", region_name: "Islington", region_code: "E09000019", title: "First project", data: { notes: "Long description\nSecond paragraph", total: 0 } },
+    { id: "second", user_id: "owner", created_at: "2026-11-04", layer_id: "two", region_type: "ua", region_name: "Islington", region_code: "E09000019", title: null, data: { description: "Another project", participants: 25 } },
+  ];
   const blob = await buildTemplate({ mapName: "Current map", layers, fields, entries, lookup: {} });
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.load(await blob.arrayBuffer());
