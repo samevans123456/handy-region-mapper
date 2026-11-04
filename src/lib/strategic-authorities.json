@@ -1,0 +1,492 @@
+[
+  {
+    "code": "E47000006",
+    "name": "Tees Valley",
+    "status": "established",
+    "authority_type": "CA",
+    "aliases": [
+      "Tees Valley Combined Authority"
+    ],
+    "constituent_codes": [
+      "E06000001",
+      "E06000002",
+      "E06000003",
+      "E06000004",
+      "E06000005"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "E47000004",
+    "name": "Liverpool City Region",
+    "status": "established",
+    "authority_type": "CA",
+    "aliases": [
+      "Liverpool City Region Combined Authority"
+    ],
+    "constituent_codes": [
+      "E06000006",
+      "E08000011",
+      "E08000012",
+      "E08000013",
+      "E08000014",
+      "E08000015"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "E47000018",
+    "name": "Lancashire",
+    "status": "established",
+    "authority_type": "CCA",
+    "aliases": [
+      "Lancashire Combined County Authority",
+      "Lancashire CCA"
+    ],
+    "constituent_codes": [
+      "E06000008",
+      "E06000009",
+      "E07000117",
+      "E07000118",
+      "E07000119",
+      "E07000120",
+      "E07000121",
+      "E07000122",
+      "E07000123",
+      "E07000124",
+      "E07000125",
+      "E07000126",
+      "E07000127",
+      "E07000128"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "E47000016",
+    "name": "Hull and East Yorkshire",
+    "status": "established",
+    "authority_type": "CA",
+    "aliases": [
+      "Hull and East Yorkshire Combined Authority"
+    ],
+    "constituent_codes": [
+      "E06000010",
+      "E06000011"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "E47000017",
+    "name": "Greater Lincolnshire",
+    "status": "established",
+    "authority_type": "CCA",
+    "aliases": [
+      "Greater Lincolnshire Combined County Authority"
+    ],
+    "constituent_codes": [
+      "E06000012",
+      "E06000013",
+      "E07000136",
+      "E07000137",
+      "E07000138",
+      "E07000139",
+      "E07000140",
+      "E07000141",
+      "E07000142"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "E47000012",
+    "name": "York and North Yorkshire",
+    "status": "established",
+    "authority_type": "CA",
+    "aliases": [
+      "York and North Yorkshire Combined Authority"
+    ],
+    "constituent_codes": [
+      "E06000014",
+      "E06000065"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "E47000013",
+    "name": "East Midlands",
+    "status": "established",
+    "authority_type": "CCA",
+    "aliases": [
+      "East Midlands Combined County Authority"
+    ],
+    "constituent_codes": [
+      "E06000015",
+      "E06000018",
+      "E07000032",
+      "E07000033",
+      "E07000034",
+      "E07000035",
+      "E07000036",
+      "E07000037",
+      "E07000038",
+      "E07000039",
+      "E07000170",
+      "E07000171",
+      "E07000172",
+      "E07000173",
+      "E07000174",
+      "E07000175",
+      "E07000176"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "E47000009",
+    "name": "West of England",
+    "status": "established",
+    "authority_type": "CA",
+    "aliases": [
+      "West of England Combined Authority",
+      "West of England CA"
+    ],
+    "constituent_codes": [
+      "E06000022",
+      "E06000023",
+      "E06000025"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "E47000015",
+    "name": "Devon and Torbay",
+    "status": "established",
+    "authority_type": "CCA",
+    "aliases": [
+      "Devon and Torbay Combined County Authority"
+    ],
+    "constituent_codes": [
+      "E06000027",
+      "E07000040",
+      "E07000041",
+      "E07000042",
+      "E07000043",
+      "E07000044",
+      "E07000045",
+      "E07000046",
+      "E07000047"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "E47000008",
+    "name": "Cambridgeshire and Peterborough",
+    "status": "established",
+    "authority_type": "CA",
+    "aliases": [
+      "Cambridgeshire and Peterborough Combined Authority",
+      "Cambs and Peterborough Combined Authority",
+      "Cambs and Peterborough"
+    ],
+    "constituent_codes": [
+      "E06000031",
+      "E07000008",
+      "E07000009",
+      "E07000010",
+      "E07000011",
+      "E07000012"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "E47000014",
+    "name": "North East",
+    "status": "established",
+    "authority_type": "CA",
+    "aliases": [
+      "North East Combined Authority"
+    ],
+    "constituent_codes": [
+      "E06000047",
+      "E06000057",
+      "E08000021",
+      "E08000022",
+      "E08000023",
+      "E08000024",
+      "E08000037"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "E47000001",
+    "name": "Greater Manchester",
+    "status": "established",
+    "authority_type": "CA",
+    "aliases": [
+      "Greater Manchester Combined Authority"
+    ],
+    "constituent_codes": [
+      "E08000001",
+      "E08000002",
+      "E08000003",
+      "E08000004",
+      "E08000005",
+      "E08000006",
+      "E08000007",
+      "E08000008",
+      "E08000009",
+      "E08000010"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "E47000002",
+    "name": "South Yorkshire",
+    "status": "established",
+    "authority_type": "CA",
+    "aliases": [
+      "South Yorkshire Combined Authority"
+    ],
+    "constituent_codes": [
+      "E08000017",
+      "E08000018",
+      "E08000038",
+      "E08000039"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "E47000007",
+    "name": "West Midlands",
+    "status": "established",
+    "authority_type": "CA",
+    "aliases": [
+      "West Midlands Combined Authority"
+    ],
+    "constituent_codes": [
+      "E08000025",
+      "E08000026",
+      "E08000027",
+      "E08000028",
+      "E08000029",
+      "E08000030",
+      "E08000031"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "E47000003",
+    "name": "West Yorkshire",
+    "status": "established",
+    "authority_type": "CA",
+    "aliases": [
+      "West Yorkshire Combined Authority"
+    ],
+    "constituent_codes": [
+      "E08000032",
+      "E08000033",
+      "E08000034",
+      "E08000035",
+      "E08000036"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "E61000001",
+    "name": "Greater London Authority",
+    "status": "established",
+    "authority_type": "GLA",
+    "aliases": [
+      "Greater London",
+      "London",
+      "GLA"
+    ],
+    "constituent_codes": [
+      "E09000001",
+      "E09000002",
+      "E09000003",
+      "E09000004",
+      "E09000005",
+      "E09000006",
+      "E09000007",
+      "E09000008",
+      "E09000009",
+      "E09000010",
+      "E09000011",
+      "E09000012",
+      "E09000013",
+      "E09000014",
+      "E09000015",
+      "E09000016",
+      "E09000017",
+      "E09000018",
+      "E09000019",
+      "E09000020",
+      "E09000021",
+      "E09000022",
+      "E09000023",
+      "E09000024",
+      "E09000025",
+      "E09000026",
+      "E09000027",
+      "E09000028",
+      "E09000029",
+      "E09000030",
+      "E09000031",
+      "E09000032",
+      "E09000033"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "SA-CHESHIRE-WARRINGTON",
+    "name": "Cheshire and Warrington",
+    "authority_type": "CA",
+    "status": "established",
+    "aliases": [
+      "Cheshire and Warrington",
+      "Cheshire and Warrington Combined Authority"
+    ],
+    "constituent_codes": [
+      "E06000049",
+      "E06000050",
+      "E06000007"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "SA-CUMBRIA",
+    "name": "Cumbria",
+    "authority_type": "CA",
+    "status": "established",
+    "aliases": [
+      "Cumbria Combined Authority"
+    ],
+    "constituent_codes": [
+      "E06000063",
+      "E06000064"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "SA-HAMPSHIRE-SOLENT",
+    "name": "Hampshire and the Solent",
+    "authority_type": "CCA",
+    "status": "established",
+    "aliases": [
+      "Hampshire and Solent",
+      "Hampshire and Solent CCA",
+      "Hampshire and the Solent Combined County Authority",
+      "Hampshire and Solent Combined County Authority"
+    ],
+    "constituent_codes": [
+      "E07000084",
+      "E07000085",
+      "E07000086",
+      "E07000087",
+      "E07000088",
+      "E07000089",
+      "E07000090",
+      "E07000091",
+      "E07000092",
+      "E07000093",
+      "E07000094",
+      "E06000044",
+      "E06000045",
+      "E06000046"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "SA-SUSSEX-BRIGHTON",
+    "name": "Sussex and Brighton",
+    "authority_type": "CCA",
+    "status": "established",
+    "aliases": [
+      "Sussex and Brighton Combined County Authority",
+      "Sussex and Brighton CCA"
+    ],
+    "constituent_codes": [
+      "E07000061",
+      "E07000062",
+      "E07000063",
+      "E07000064",
+      "E07000065",
+      "E07000224",
+      "E07000225",
+      "E07000226",
+      "E07000227",
+      "E07000228",
+      "E07000229",
+      "E07000223",
+      "E06000043"
+    ],
+    "source": "https://en.wikipedia.org/wiki/List_of_strategic_authorities"
+  },
+  {
+    "code": "PLAN-GREATER-ESSEX",
+    "name": "Greater Essex (proposed)",
+    "authority_type": "CCA",
+    "status": "proposed",
+    "aliases": [
+      "Greater Essex",
+      "Greater Essex Combined County Authority"
+    ],
+    "constituent_codes": [
+      "E07000066",
+      "E07000067",
+      "E07000068",
+      "E07000069",
+      "E07000070",
+      "E07000071",
+      "E07000072",
+      "E07000073",
+      "E07000074",
+      "E07000075",
+      "E07000076",
+      "E07000077",
+      "E06000033",
+      "E06000034"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Combined_authorities_and_combined_county_authorities#Upcoming_combined_authorities_and_combined_county_authorities"
+  },
+  {
+    "code": "PLAN-NORFOLK-SUFFOLK",
+    "name": "Norfolk and Suffolk (proposed)",
+    "authority_type": "CCA",
+    "status": "proposed",
+    "aliases": [
+      "Norfolk and Suffolk",
+      "Norfolk and Suffolk Combined County Authority"
+    ],
+    "constituent_codes": [
+      "E07000143",
+      "E07000144",
+      "E07000145",
+      "E07000146",
+      "E07000147",
+      "E07000148",
+      "E07000149",
+      "E07000200",
+      "E07000202",
+      "E07000203",
+      "E07000244",
+      "E07000245"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Combined_authorities_and_combined_county_authorities#Upcoming_combined_authorities_and_combined_county_authorities"
+  },
+  {
+    "code": "PLAN-HEART-WESSEX",
+    "name": "Heart of Wessex (proposed)",
+    "authority_type": "CA",
+    "status": "proposed",
+    "aliases": [
+      "Heart of Wessex",
+      "Heart of Wessex Combined Authority"
+    ],
+    "constituent_codes": [
+      "E06000059",
+      "E06000066",
+      "E06000054"
+    ],
+    "source": "https://www.wiltshire.gov.uk/news/revised-expression-of-interest-in-devolution-by-dorset-somerset-and-wiltshire-councils"
+  }
+]
