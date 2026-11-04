@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowDown, ArrowUp, Eye, EyeOff, ListPlus, MoreHorizontal, Tag, Table2, Trash2, Settings2, Pencil } from "lucide-react";
+import { ArrowDown, ArrowUp, Eye, EyeOff, GripVertical, ListPlus, MoreHorizontal, Tag, Table2, Trash2, Settings2, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
@@ -17,21 +17,55 @@ interface Props {
   onFields: (l: LayerRow) => void;
   onAddEntry: (l: LayerRow) => void;
   onShowData: (l: LayerRow) => void;
+  onReorder: (idsInDisplayOrder: string[]) => void;
 }
 
-export function LayerPanel({ layers, entries, onUpdate, onMove, onDelete, onFields, onAddEntry, onShowData }: Props) {
+export function LayerPanel({ layers, entries, onUpdate, onMove, onDelete, onFields, onAddEntry, onShowData, onReorder }: Props) {
   const [renaming, setRenaming] = useState<string | null>(null);
+  const [dragId, setDragId] = useState<string | null>(null);
+  const [overId, setOverId] = useState<string | null>(null);
   const ordered = [...layers].sort((a, b) => b.sort_order - a.sort_order);
   if (!ordered.length)
     return <p className="px-4 py-6 text-sm text-muted-foreground">No layers yet. Add a layer such as “Programme area” to start.</p>;
 
+  const drop = (targetId: string) => {
+    if (dragId && dragId !== targetId) {
+      const ids = ordered.map((l) => l.id);
+      ids.splice(ids.indexOf(dragId), 1);
+      ids.splice(ids.indexOf(targetId), 0, dragId);
+      onReorder(ids);
+    }
+    setDragId(null);
+    setOverId(null);
+  };
+
   return (
-    <ul>
-      {ordered.map((l, i) => {
-        const count = entries.filter((e) => e.layer_id === l.id).length;
-        return (
-          <li key={l.id} className={cn("border-b border-border px-3 py-3", !l.visible && "opacity-60")}>
-            <div className="flex items-center gap-2">
+    <>
+      <ul>
+        {ordered.map((l, i) => {
+          const count = entries.filter((e) => e.layer_id === l.id).length;
+          return (
+            <li
+              key={l.id}
+              className={cn("border-b border-border px-3 py-3", !l.visible && "opacity-60", overId === l.id && dragId && dragId !== l.id && "border-t-2 border-t-primary")}
+              onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; setOverId(l.id); }}
+              onDrop={(e) => { e.preventDefault(); drop(l.id); }}
+              onDragEnd={() => { setDragId(null); setOverId(null); }}
+            >
+              <div className="flex items-center gap-1">
+                <button
+                  aria-label="Drag to reorder layer"
+                  title="Drag to reorder — top layer draws on top"
+                  className="cursor-grab touch-none text-muted-foreground hover:text-foreground active:cursor-grabbing"
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.effectAllowed = "move";
+                    e.dataTransfer.setData("text/plain", l.id);
+                    setDragId(l.id);
+                  }}
+                >
+                  <GripVertical className="size-4" />
+                </button>
               <Popover>
                 <PopoverTrigger asChild>
                   <button aria-label="Layer colour and opacity" className="size-5 shrink-0 border border-border" style={{ backgroundColor: l.color }} />
