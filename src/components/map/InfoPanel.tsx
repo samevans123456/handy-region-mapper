@@ -33,7 +33,7 @@ export function InfoPanel({
 }) {
   const ordered = [...layers].sort((a, b) => b.sort_order - a.sort_order);
   return (
-    <aside aria-label="Region details" className="absolute right-3 top-3 bottom-3 z-30 flex w-[480px] max-w-[calc(100%-1.5rem)] flex-col border border-border border-t-4 border-t-primary bg-card text-card-foreground shadow-xl">
+    <aside aria-label="Region details" className="fixed right-3 top-20 bottom-3 z-30 flex w-[calc(100vw-1.5rem)] flex-col border border-border border-t-4 border-t-primary bg-card text-card-foreground shadow-xl sm:absolute sm:top-3 sm:w-[480px] sm:max-w-[calc(100%-1.5rem)]">
       <div className="flex items-start justify-between gap-3 border-b border-border px-5 py-4">
         <div className="min-w-0">
           <h2 className="text-xl font-semibold">Region details</h2>
