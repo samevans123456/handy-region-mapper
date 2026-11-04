@@ -10,6 +10,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Plot overlapping layers of UK regions, label them, and attach your own data to every area." },
       { property: "og:title", content: "TLG Place Mapper — interactive maps of the UK" },
       { property: "og:description", content: "Plot overlapping layers of UK regions, label them, and attach your own data to every area." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,

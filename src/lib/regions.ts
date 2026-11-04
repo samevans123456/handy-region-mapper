@@ -16,7 +16,7 @@ export const REGION_TYPES: RegionTypeDef[] = [
   { id: "region", label: "English region", short: "Region", source: "ONS Regions (Dec 2025)" },
   { id: "lad", label: "Local authority", short: "LA", source: "ONS Local Authority Districts (May 2026)" },
   { id: "pcon", label: "Westminster constituency", short: "Constituency", source: "ONS Westminster Constituencies (Jul 2024)" },
-  { id: "mayoral", label: "Mayoral / combined authority", short: "MSA", source: "ONS LAD–Combined Authority lookup (2025) + GLA" },
+  { id: "mayoral", label: "Mayoral / combined authority", short: "MSA", source: "20 strategic authorities (June 2026 article inventory) plus published proposed areas; ONS BGC district boundaries" },
 ];
 
 export const regionTypeLabel = (id: string) =>
@@ -27,7 +27,7 @@ export const isRegionType = (v: string): v is RegionTypeId =>
 
 export interface RegionFeature {
   type: "Feature";
-  properties: { code: string; name: string };
+  properties: { code: string; name: string; aliases?: string[]; status?: "established" | "proposed"; authority_type?: "CA" | "CCA" | "GLA"; source?: string; constituent_codes?: string[] };
   geometry: GeoJSON.Geometry;
 }
 export interface RegionCollection {
@@ -53,7 +53,7 @@ export function loadRegions(type: RegionTypeId): Promise<RegionCollection> {
 export async function listRegions(type: RegionTypeId) {
   const fc = await loadRegions(type);
   return fc.features
-    .map((f) => ({ code: f.properties.code, name: f.properties.name }))
+    .map((f) => ({ code: f.properties.code, name: f.properties.name, aliases: f.properties.aliases ?? [] }))
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 
@@ -68,18 +68,18 @@ export const normalise = (s: string) =>
 
 /** Match a region by ONS code first, then by normalised name. */
 export function matchRegion(
-  regions: { code: string; name: string }[],
+  regions: { code: string; name: string; aliases?: string[] }[],
   value: string,
 ): { code: string; name: string } | undefined {
   let v = value.trim();
   if (!v) return undefined;
   // Template / table format: "Name (CODE)"
-  const m = /\(([A-Z]\d{8})\)\s*$/i.exec(v);
-  if (m?.[1]) v = m[1];
+  const m = /\(([^()]+)\)\s*$/.exec(v);
+  if (m?.[1] && regions.some((r) => r.code.toLowerCase() === m[1]?.toLowerCase())) v = m[1];
   const byCode = regions.find((r) => r.code.toLowerCase() === v.toLowerCase());
   if (byCode) return byCode;
   const n = normalise(v);
-  return regions.find((r) => normalise(r.name) === n);
+  return regions.find((r) => normalise(r.name) === n || r.aliases?.some((alias) => normalise(alias) === n));
 }
 
 /** Guess a region type from free text like "Local Authority" or "LAD". */

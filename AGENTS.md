@@ -10,7 +10,8 @@
 <!-- LOVABLE:END -->
 
 ## Architecture rules
-- Region boundaries are static simplified GeoJSON in `public/boundaries/<type>.geojson` (properties `code`, `name`), built from ONS Open Geography Portal BGC (generalised, clipped) layers with light mapshaper simplification; mayoral = LADs dissolved via the LAD→CAUTH lookup plus GLA. Why: fast loads, no runtime dependency on ONS services.
+- Region boundaries are static simplified GeoJSON in `public/boundaries/<type>.geojson` (properties `code`, `name`), built from ONS Open Geography Portal BGC layers with light simplification; mayoral includes GLA and dissolved LAD footprints catalogued in `src/lib/strategic-authorities.json`. Preserve existing ONS codes; additions use stable `SA-` and `PLAN-` identifiers, never invented ONS codes. Why: fast loads and compatibility with saved entries.
+- Strategic authority status and constituent LAD codes are source-backed catalogue metadata; proposed names explicitly carry `(proposed)` and aliases share the same geometry. The established inventory follows the supplied article's June 2026 snapshot, not a claim of live legal status. Why: planning areas must not masquerade as final boundaries or duplicate authorities.
 - Layers are categories, not region types; each `entries` row carries its own region_type/code and a region may appear many times. Why: user requirement for mixed geographies and duplicate entries.
 - MapLibre is only loaded via `React.lazy` behind `<ClientOnly>` (src/components/map/MapCanvas.tsx). Why: browser-only library breaks SSR.
 - All tables carry `user_id` with owner-only RLS; app reads/writes via the browser client. Why: simple private-per-user maps.

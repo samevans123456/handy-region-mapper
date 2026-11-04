@@ -6,7 +6,7 @@ import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@
 import { listRegions, type RegionTypeId } from "@/lib/regions";
 import { cn } from "@/lib/utils";
 
-interface Region { code: string; name: string }
+interface Region { code: string; name: string; aliases?: string[] }
 
 export function RegionPicker({
   type,
@@ -42,6 +42,7 @@ export function RegionPicker({
               <CommandItem
                 key={r.code}
                 value={`${r.name} ${r.code}`}
+                keywords={r.aliases ?? []}
                 onSelect={() => { onChange(r); setOpen(false); }}
               >
                 <Check className={cn("mr-1", value?.code === r.code ? "opacity-100" : "opacity-0")} />
