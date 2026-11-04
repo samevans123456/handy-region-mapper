@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
+import { Blob as NodeBlob } from "node:buffer";
 import ExcelJS from "exceljs";
 import { listRegions, type RegionCollection } from "./regions";
 import { buildTemplate } from "./excel";
@@ -14,6 +15,7 @@ describe("template region freshness", () => {
       .mockResolvedValueOnce({ ok: true, json: async () => original })
       .mockResolvedValueOnce({ ok: true, json: async () => current });
     vi.stubGlobal("fetch", fetchMock);
+    vi.stubGlobal("Blob", NodeBlob);
     const stale = await listRegions("mayoral");
     expect(stale.some((r) => r.name === "Hampshire and the Solent")).toBe(false);
     const fresh = await listRegions("mayoral", { refresh: true });
