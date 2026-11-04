@@ -22,6 +22,47 @@ interface Props {
 
 const PREFIX = "tlg-";
 
+function ringArea(r: number[][]) {
+  let a = 0;
+  for (let i = 0, j = r.length - 1; i < r.length; j = i++) a += (r[j]![0]! * r[i]![1]!) - (r[i]![0]! * r[j]![1]!);
+  return a / 2;
+}
+function inRing(p: number[], r: number[][]) {
+  let inside = false;
+  for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+    const [xi, yi] = r[i]!, [xj, yj] = r[j]!;
+    if ((yi! > p[1]!) !== (yj! > p[1]!) && p[0]! < ((xj! - xi!) * (p[1]! - yi!)) / (yj! - yi!) + xi!) inside = !inside;
+  }
+  return inside;
+}
+/** A single point inside the largest polygon part, for one label per region. */
+function labelPoint(g: GeoJSON.Geometry): [number, number] | null {
+  const polys = g.type === "Polygon" ? [g.coordinates] : g.type === "MultiPolygon" ? g.coordinates : [];
+  let best: number[][] | null = null, bestA = 0;
+  for (const p of polys) {
+    const a = Math.abs(ringArea(p[0]!));
+    if (a > bestA) { bestA = a; best = p[0]!; }
+  }
+  if (!best) return null;
+  let cx = 0, cy = 0, a6 = 0;
+  for (let i = 0, j = best.length - 1; i < best.length; j = i++) {
+    const f = best[j]![0]! * best[i]![1]! - best[i]![0]! * best[j]![1]!;
+    cx += (best[j]![0]! + best[i]![0]!) * f; cy += (best[j]![1]! + best[i]![1]!) * f; a6 += f * 3;
+  }
+  const c: [number, number] = [cx / a6, cy / a6];
+  if (a6 && inRing(c, best)) return c;
+  // Concave shape: scan horizontal line through centroid, take midpoint of widest inside span.
+  const xs: number[] = [];
+  for (let i = 0, j = best.length - 1; i < best.length; j = i++) {
+    const [xi, yi] = best[i]!, [xj, yj] = best[j]!;
+    if ((yi! > c[1]) !== (yj! > c[1])) xs.push(((xj! - xi!) * (c[1] - yi!)) / (yj! - yi!) + xi!);
+  }
+  xs.sort((a, b) => a - b);
+  let w = -1, mid = best[0]![0]!;
+  for (let i = 0; i + 1 < xs.length; i += 2) if (xs[i + 1]! - xs[i]! > w) { w = xs[i + 1]! - xs[i]!; mid = (xs[i]! + xs[i + 1]!) / 2; }
+  return [mid, w >= 0 ? c[1] : best[0]![1]!];
+}
+
 export default function MapCanvas({ layers, entries, selectedIds, onSelect }: Props) {
   const el = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -124,10 +165,18 @@ export default function MapCanvas({ layers, entries, selectedIds, onSelect }: Pr
       if (layer.show_labels) {
         const id = `${PREFIX}label-${layer.id}`;
         labelLayers.push(id);
+        // One label point per entry (on its largest part) so multi-part regions don't repeat labels.
+        const labelSrc = `${PREFIX}lblsrc-${layer.id}`;
+        const points: GeoJSON.Feature[] = [];
+        for (const f of features) {
+          const pt = labelPoint(f.geometry);
+          if (pt) points.push({ type: "Feature", geometry: { type: "Point", coordinates: pt }, properties: f.properties });
+        }
+        map.addSource(labelSrc, { type: "geojson", data: { type: "FeatureCollection", features: points } });
         map.addLayer({
           id,
           type: "symbol",
-          source: src,
+          source: labelSrc,
           layout: {
             "text-field": ["get", "label"],
             "text-font": ["Noto Sans Bold"],
