@@ -33,3 +33,12 @@ describe("parseRegionType", () => {
     expect(parseRegionType("Country")).toBe("country");
   });
 });
+
+describe("unitary authority boundaries", () => {
+  it("includes London boroughs matched by their full name", async () => {
+    const { readFileSync } = await import("node:fs");
+    const fc = JSON.parse(readFileSync("public/boundaries/ua.geojson", "utf8"));
+    const list = fc.features.map((f: { properties: { code: string; name: string; aliases?: string[] } }) => f.properties);
+    expect(matchRegion(list, "London Borough of Islington")?.name).toBe("Islington");
+  });
+});
