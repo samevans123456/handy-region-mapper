@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { InfoPanel } from "@/components/map/InfoPanel";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Layers } from "lucide-react";
+import { Info, Layers } from "lucide-react";
+import { AboutPanel } from "@/components/map/AboutPanel";
 import { applyViewerVisibility } from "@/lib/viewer-layers";
 import { sharedMapQueryOptions, type SharedMapData } from "@/lib/sharing.functions";
 
