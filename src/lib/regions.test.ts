@@ -14,6 +14,9 @@ describe("matchRegion", () => {
   it("matches names loosely", () => {
     expect(matchRegion(regions, "Bristol")?.code).toBe("E06000023");
   });
+  it("matches the template's Name (CODE) format by code", () => {
+    expect(matchRegion(regions, "Bolton (E08000001)")?.code).toBe("E08000001");
+  });
   it("returns undefined for unknown regions", () => {
     expect(matchRegion(regions, "Atlantis")).toBeUndefined();
   });
