@@ -3,10 +3,24 @@ import { readFileSync } from "node:fs";
 import { Blob as NodeBlob } from "node:buffer";
 import ExcelJS from "exceljs";
 import { listRegions, type RegionCollection } from "./regions";
-import { buildTemplate } from "./excel";
+import { buildTemplate, readWorkbook } from "./excel";
 import type { EntryRow, FieldRow, LayerRow } from "./maps-data";
 
 afterEach(() => vi.unstubAllGlobals());
+
+it("imports embedded Excel hyperlink destinations instead of their display filenames", async () => {
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet("Entries");
+  sheet.addRow(["Layer", "Region type", "Region", "Document"]);
+  sheet.addRow(["Partners", "County council", "Essex", {
+    text: "Essex proposal.pdf", hyperlink: "https://example.org/documents/essex.pdf",
+  }]);
+  const buffer = await workbook.xlsx.writeBuffer();
+  const file = { arrayBuffer: async () => buffer } as File;
+  const result = await readWorkbook(file);
+  expect(result.rows[0]?.Document).toBe("https://example.org/documents/essex.pdf");
+  expect(result.rows[0]?.Region).toBe("Essex");
+});
 
 it("includes a default description column even with no custom fields", async () => {
   vi.stubGlobal("Blob", NodeBlob);
