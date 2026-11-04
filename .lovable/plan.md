@@ -33,4 +33,10 @@
 - MapLibre + OpenFreeMap positron basemap, loaded client-only. Each layer builds a GeoJSON source by joining its entries to boundaries from the needed region-type files, with each entry as its own feature. It draws fill, outline and label layers. A click queries all rendered features at that point.
 - CSV parsing with papaparse; matching on normalised name or ONS code within the stated region type.
 - Static GeoJSON in `public/boundaries/*.geojson`, simplified with mapshaper.
-- Distinctive cartographic look (paper tone, ink-dark type, serif headings) set as design tokens.
+
+## Branding (from the TLG brand guide)
+- Helvetica Neue (Arial fallback), left-aligned, large clear headings, nothing smaller than 14px.
+- Background #faf7f8, main text TLG black #313130 (never pure black), secondary text and primary buttons #1a2792.
+- Default layer colours use the secondary set first (#7f96ff, #385948, #f7dba7, #f7a108), then the chart tints and shades. Tertiary brights (#ffb7ff, #c7ef00, #f7574b, #21fa90, #aa5042) are kept for small highlights only, such as the selected region.
+- Square corners on swatches, markers and legend keys, with no circles. No big blocks of bright colour; panels stay light, with thin borders.
+- "Test, Learn, Grow" appears on the landing page and in the footer. The gradient loop is not used, because it is reserved for TLG diagrams.
