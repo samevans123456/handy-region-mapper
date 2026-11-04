@@ -7,8 +7,11 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { REGION_TYPES } from "@/lib/regions";
-import { commitRows, loadAllRegions, prepareRows, type RawRow, type RegionLookup } from "@/lib/bulk-import";
+import { commitRows, loadAllRegions, prepareRows, type ImportMode, type RawRow, type RegionLookup } from "@/lib/bulk-import";
+import { isDescriptionLabel } from "@/lib/entry-description";
 import { buildTemplate, downloadBlob, readWorkbook } from "@/lib/excel";
 import type { FieldRow, LayerRow } from "@/lib/maps-data";
 
@@ -37,8 +40,10 @@ export function CsvImportDialog({
   const [titleCol, setTitleCol] = useState<string>(NONE);
   const [lookup, setLookup] = useState<RegionLookup>({});
   const [busy, setBusy] = useState(false);
+  const [importMode, setImportMode] = useState<ImportMode>("add");
+  const [confirmReplace, setConfirmReplace] = useState(false);
 
-  useEffect(() => { if (open) { setRows([]); setCols([]); } }, [open]);
+  useEffect(() => { if (open) { setRows([]); setCols([]); setImportMode("add"); setConfirmReplace(false); } }, [open]);
   useEffect(() => { loadAllRegions().then(setLookup); }, []);
 
   function applyParsed(c: string[], data: Row[]) {
@@ -108,7 +113,8 @@ export function CsvImportDialog({
   async function doImport() {
     setBusy(true);
     try {
-      const { count, created } = await commitRows(mapId, layers, fields, preview.ok);
+      if (importMode === "replace" && preview.bad.length) throw new Error("Fix every unmatched row before replacing entries");
+      const { count, created } = await commitRows(mapId, layers, fields, preview.ok, importMode);
       toast.success(`Imported ${count} entries${created.length ? ` and created ${created.length} new layer(s)` : ""}`);
       onDone();
       onOpenChange(false);
@@ -179,20 +185,43 @@ export function CsvImportDialog({
                   <span className={preview.bad.length ? "font-medium text-destructive" : ""}>{preview.bad.length}</span> not matched
                 </div>
                 {newLayers.length > 0 && <div className="mt-1">New layers to create: {newLayers.join(", ")}</div>}
-                {dataCols.length > 0 && <div className="mt-1 text-muted-foreground">Custom fields: {dataCols.join(", ")}</div>}
+                {dataCols.filter((c) => !isDescriptionLabel(c)).length > 0 && <div className="mt-1 text-muted-foreground">Custom fields: {dataCols.filter((c) => !isDescriptionLabel(c)).join(", ")}</div>}
                 {preview.bad.length > 0 && (
                   <ul className="mt-2 max-h-32 space-y-0.5 overflow-y-auto text-muted-foreground">
                     {preview.bad.slice(0, 50).map((b) => <li key={b.row}>Row {b.row + 1}: {b.reason}</li>)}
                   </ul>
                 )}
               </div>
+              <RadioGroup value={importMode} onValueChange={(value) => setImportMode(value === "replace" ? "replace" : "add")} aria-label="Upload mode" className="gap-3">
+                <div className="flex items-center gap-3">
+                  <RadioGroupItem value="add" id="upload-add" disabled={busy} />
+                  <Label htmlFor="upload-add">Add to existing entries</Label>
+                </div>
+                <div className="flex items-center gap-3">
+                  <RadioGroupItem value="replace" id="upload-replace" disabled={busy} />
+                  <Label htmlFor="upload-replace">Replace all entries in this map</Label>
+                </div>
+              </RadioGroup>
+              {importMode === "replace" && <p className="text-sm text-destructive">All current entries in every layer of this map will be replaced. Layers and custom field settings are kept. {preview.bad.length > 0 && "Fix all unmatched rows first."}</p>}
             </>
           )}
         </div>
         <DialogFooter>
-          <Button onClick={doImport} disabled={busy || !preview.ok.length}>Import {preview.ok.length || ""} entries</Button>
+          <Button onClick={() => importMode === "replace" ? setConfirmReplace(true) : doImport()} disabled={busy || !preview.ok.length || (importMode === "replace" && preview.bad.length > 0)}>{busy ? "Importing…" : `Import ${preview.ok.length || ""} entries`}</Button>
         </DialogFooter>
       </DialogContent>
+      <AlertDialog open={confirmReplace} onOpenChange={setConfirmReplace}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Replace all entries?</AlertDialogTitle>
+            <AlertDialogDescription>This will remove every existing entry in {mapName} and replace them with {preview.ok.length} uploaded entries. Other maps are not affected. Layers and custom fields will remain. This cannot be undone.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={doImport}>Replace entries</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }
