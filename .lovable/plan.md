@@ -9,7 +9,9 @@
 - Add region data two ways:
   - Direct input: pick a region from a searchable list of that type's official regions, then fill fields.
   - CSV upload: match rows by region name or official code, preview matches and mismatches, then import.
-- Optional: colour regions by a numeric custom field.
+- Multiple entries per region are allowed. A region can have several entries in the same layer, each with its own custom data. Clicking it lists every entry in the info panel, with one tab or card per entry. Repeated rows in a CSV become separate entries.
+- You can also add two layers of the same region type, such as "Local Authorities – Housing" and "Local Authorities – Transport", each with its own fields and entries.
+- Optional: colour regions by a numeric custom field. When a region has several entries, choose sum, average, first or count.
 
 ## Pages
 - `/` landing page with sign-in.
