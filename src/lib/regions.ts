@@ -71,8 +71,11 @@ export function matchRegion(
   regions: { code: string; name: string }[],
   value: string,
 ): { code: string; name: string } | undefined {
-  const v = value.trim();
+  let v = value.trim();
   if (!v) return undefined;
+  // Template / table format: "Name (CODE)"
+  const m = /\(([A-Z]\d{8})\)\s*$/i.exec(v);
+  if (m?.[1]) v = m[1];
   const byCode = regions.find((r) => r.code.toLowerCase() === v.toLowerCase());
   if (byCode) return byCode;
   const n = normalise(v);

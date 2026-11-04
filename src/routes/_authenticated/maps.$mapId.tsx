@@ -3,7 +3,7 @@ import { ClientOnly } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { lazy, Suspense, useState } from "react";
 import { toast } from "sonner";
-import { Plus, Upload, ListPlus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Upload, ListPlus, Pencil, Trash2, Table2 } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -13,6 +13,7 @@ import { InfoPanel, FieldValue } from "@/components/map/InfoPanel";
 import { EntryDialog } from "@/components/map/EntryDialog";
 import { FieldsDialog } from "@/components/map/FieldsDialog";
 import { CsvImportDialog } from "@/components/map/CsvImportDialog";
+import { TableEditor } from "@/components/map/TableEditor";
 import { regionTypeLabel } from "@/lib/regions";
 import {
   LAYER_COLOURS, createLayer, deleteEntry, deleteLayer, fetchMapBundle, updateLayer, updateMap,
@@ -45,6 +46,7 @@ function Editor() {
   const [editing, setEditing] = useState<EntryRow | null>(null);
   const [entryLayer, setEntryLayer] = useState<string | undefined>();
   const [csvOpen, setCsvOpen] = useState(false);
+  const [tableOpen, setTableOpen] = useState(false);
   const [fieldsLayer, setFieldsLayer] = useState<LayerRow | null>(null);
   const [dataLayer, setDataLayer] = useState<LayerRow | null>(null);
 
@@ -150,8 +152,9 @@ function Editor() {
           </div>
           <div className="grid grid-cols-2 gap-2 border-t border-border p-3">
             <Button onClick={() => openNewEntry()}><ListPlus /> Add entry</Button>
-            <Button variant="outline" onClick={() => (layers.length ? setCsvOpen(true) : toast.error("Add a layer first"))}>
-              <Upload /> Upload CSV
+            <Button variant="outline" onClick={() => setTableOpen(true)}><Table2 /> Table</Button>
+            <Button variant="outline" className="col-span-2" onClick={() => setCsvOpen(true)}>
+              <Upload /> Excel template / upload file
             </Button>
           </div>
           <p className="border-t border-border px-4 py-2 text-sm text-muted-foreground">Test, Learn, Grow · Source: ONS</p>
@@ -184,7 +187,8 @@ function Editor() {
         defaultLayerId={entryLayer}
         onSaved={refresh}
       />
-      <CsvImportDialog open={csvOpen} onOpenChange={setCsvOpen} layers={layers} fields={fields} onDone={refresh} />
+      <CsvImportDialog open={csvOpen} onOpenChange={setCsvOpen} mapId={mapId} mapName={map.name} layers={layers} fields={fields} onDone={refresh} />
+      <TableEditor open={tableOpen} onOpenChange={setTableOpen} mapId={mapId} layers={layers} fields={fields} onDone={refresh} />
       <FieldsDialog layer={fieldsLayer} fields={fields} onOpenChange={(o) => !o && setFieldsLayer(null)} onSaved={refresh} />
 
       <Sheet open={!!dataLayer} onOpenChange={(o) => !o && setDataLayer(null)}>
