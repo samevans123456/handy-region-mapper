@@ -9,7 +9,7 @@ export function descriptionKey(fields: FieldRow[]) {
 }
 
 export function readDescription(data: Record<string, unknown>, fields: FieldRow[]) {
-  const value = data[descriptionKey(fields)] ?? data.description ??
+  const value = data[descriptionKey(fields)] ?? data["description"] ??
     Object.entries(data).find(([key]) => isDescriptionLabel(key))?.[1];
   return value == null ? "" : String(value);
 }

@@ -7,6 +7,15 @@ import { buildTemplate } from "./excel";
 
 afterEach(() => vi.unstubAllGlobals());
 
+it("includes a default description column even with no custom fields", async () => {
+  vi.stubGlobal("Blob", NodeBlob);
+  const blob = await buildTemplate({ mapName: "Description test", layers: [], fields: [], lookup: {} });
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await blob.arrayBuffer());
+  const entries = workbook.getWorksheet("Entries");
+  expect(entries?.getCell("E1").value).toBe("Description");
+});
+
 describe("template region freshness", () => {
   it("refreshes an old authority lookup and exports all twenty authorities plus three proposed areas", async () => {
     const current = JSON.parse(readFileSync("public/boundaries/mayoral.geojson", "utf8")) as RegionCollection;

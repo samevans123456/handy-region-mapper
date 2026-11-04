@@ -19,3 +19,5 @@
 - Bulk entry (file upload and table editor) goes through `src/lib/bulk-import.ts` (prepareRows/commitRows), which auto-creates missing layers and fields. Why: one matching/commit path for every input method.
 - Template downloads refresh the shared region lookup and boundary requests revalidate HTTP caches. Why: an open editor must not export outdated region choices after boundary updates.
 - Shared-map layer filters use viewer-local visibility overrides and never write saved layers. Why: viewers can filter without editing the owner's map.
+- Default entry descriptions live in entry data via the shared description helpers, reusing legacy Description field keys. Why: all input paths share one value without duplicating custom fields.
+- Replacement uploads use the security-invoker replace_map_entries RPC scoped to one editable map; deletion and insertion are transactional, preserving layer settings. Why: failed replacement cannot erase existing entries or affect another map.

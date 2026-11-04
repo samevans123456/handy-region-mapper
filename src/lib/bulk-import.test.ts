@@ -35,6 +35,6 @@ it("rejects empty replacement uploads", async () => {
 it("preserves an existing custom description field key", async () => {
   const fields = [{ key: "project_details", label: "Description", layer_id: "layer-1", field_type: "longtext" }] as FieldRow[];
   await commitRows("map-1", layers, fields, rows);
-  expect(insertEntries).toHaveBeenCalledWith([expect.objectContaining({ data: { project_details: rows[0]?.data.Description } })]);
+  expect(insertEntries).toHaveBeenCalledWith([expect.objectContaining({ data: { project_details: rows[0]?.data["Description"] } })]);
   expect(readDescription({ project_details: "Existing work" }, fields)).toBe("Existing work");
 });
