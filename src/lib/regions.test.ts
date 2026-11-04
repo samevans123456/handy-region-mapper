@@ -27,6 +27,8 @@ describe("parseRegionType", () => {
     expect(parseRegionType("Local Authority")).toBe("lad");
     expect(parseRegionType("Westminster constituency")).toBe("pcon");
     expect(parseRegionType("Mayoral Strategic Authority")).toBe("mayoral");
+    expect(parseRegionType("Strategic Authority")).toBe("mayoral");
+    expect(parseRegionType("Mayoral / combined authority")).toBe("mayoral");
     expect(parseRegionType("Country")).toBe("country");
   });
 });
