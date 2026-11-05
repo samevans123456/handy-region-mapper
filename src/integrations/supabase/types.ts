@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      custom_regions: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          name: string
+          parts: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          name: string
+          parts?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          name?: string
+          parts?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       entries: {
         Row: {
           created_at: string
