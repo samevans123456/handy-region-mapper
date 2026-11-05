@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Info, Layers } from "lucide-react";
 import { AboutPanel } from "@/components/map/AboutPanel";
+import { setCombinedRegionSource } from "@/lib/regions";
 import { applyViewerVisibility } from "@/lib/viewer-layers";
 import { sharedMapQueryOptions, type SharedMapData } from "@/lib/sharing.functions";
 
@@ -60,6 +61,12 @@ function SharedMapMap({ bundle }: { bundle: SharedMapData }) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [visibility, setVisibility] = useState<Record<string, boolean>>({});
   const [aboutOpen, setAboutOpen] = useState(true);
+  // Combined regions on a shared map come with the map, not the viewer's account.
+  useState(() => {
+    const defs = bundle.combinedRegions ?? [];
+    setCombinedRegionSource(async () => defs);
+    return 0;
+  });
   const layers = applyViewerVisibility(bundle.layers, visibility);
   const orderedLayers = [...layers].sort((a, b) => b.sort_order - a.sort_order);
   const visibleLayerIds = new Set(layers.filter((l) => l.visible).map((l) => l.id));
