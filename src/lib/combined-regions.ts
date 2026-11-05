@@ -45,6 +45,6 @@ export async function deleteCombinedRegion(id: string) {
 }
 
 /** Signed-in pages: combined regions come from the account (own plus map owners who shared with you). */
-export function useAccountCombinedRegions() {
+export function connectAccountCombinedRegions() {
   setCombinedRegionSource(fetchCombinedRegions);
 }
