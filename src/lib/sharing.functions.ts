@@ -2,6 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { queryOptions } from "@tanstack/react-query";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { generateShareToken, isValidShareToken } from "@/lib/sharing";
+import type { CombinedRegionDef } from "@/lib/regions";
+import { cleanParts } from "@/lib/combined-regions";
 import type { EntryRow, FieldRow, LayerRow } from "@/lib/maps-data";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -11,6 +13,7 @@ export interface SharedMapData {
   layers: LayerRow[];
   fields: FieldRow[];
   entries: EntryRow[];
+  combinedRegions?: CombinedRegionDef[];
 }
 
 // ---- Owner-side sharing management (RLS as the signed-in user) ----
@@ -125,7 +128,15 @@ export const fetchSharedMap = createServerFn({ method: "GET" })
         if (page.data.length < 1000) break;
       }
     }
+    const codes = [...new Set(entries.filter((e) => e.region_type === "custom").map((e) => e.region_code))];
+    let combinedRegions: CombinedRegionDef[] = [];
+    if (codes.length) {
+      const cr = await supabaseAdmin.from("custom_regions").select("code, name, parts").in("code", codes);
+      if (cr.error) throw new Error(cr.error.message);
+      combinedRegions = cr.data.map((r) => ({ code: r.code, name: r.name, parts: cleanParts(r.parts) }));
+    }
     return {
+      combinedRegions,
       map: { name: mapRes.data.name, description: mapRes.data.description },
       layers,
       fields,

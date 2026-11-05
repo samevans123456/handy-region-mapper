@@ -18,6 +18,8 @@ interface Props {
   entries: EntryRow[];
   selectedIds: string[];
   onSelect: (entryIds: string[]) => void;
+  /** Bump to reload combined regions after they are edited. */
+  combinedVersion?: number;
 }
 
 const PREFIX = "tlg-";
@@ -63,7 +65,7 @@ function labelPoint(g: GeoJSON.Geometry): [number, number] | null {
   return [mid, w >= 0 ? c[1] : best[0]![1]!];
 }
 
-export default function MapCanvas({ layers, entries, selectedIds, onSelect }: Props) {
+export default function MapCanvas({ layers, entries, selectedIds, onSelect, combinedVersion = 0 }: Props) {
   const el = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [ready, setReady] = useState(false);
@@ -112,8 +114,9 @@ export default function MapCanvas({ layers, entries, selectedIds, onSelect }: Pr
     let cancelled = false;
     Promise.all(
       [...types].map(async (t) => {
-        if ([...geomIndex.current.keys()].some((k) => k.startsWith(t + ":"))) return false;
+        if (t !== "custom" && [...geomIndex.current.keys()].some((k) => k.startsWith(t + ":"))) return false;
         const fc = await loadRegions(t);
+        if (t === "custom") for (const k of [...geomIndex.current.keys()]) if (k.startsWith("custom:")) geomIndex.current.delete(k);
         for (const f of fc.features) geomIndex.current.set(`${t}:${f.properties.code}`, f.geometry);
         return true;
       }),
@@ -123,7 +126,7 @@ export default function MapCanvas({ layers, entries, selectedIds, onSelect }: Pr
     return () => {
       cancelled = true;
     };
-  }, [layers, entries]);
+  }, [layers, entries, combinedVersion]);
 
   // Rebuild our sources/layers whenever data changes.
   useEffect(() => {
