@@ -52,6 +52,11 @@ export function setCombinedRegionSource(fn: () => Promise<CombinedRegionDef[]>) 
   cache.delete("custom");
 }
 
+/** Forget loaded combined regions so the next load fetches fresh ones. */
+export function refreshCombinedRegions() {
+  cache.delete("custom");
+}
+
 /** Merge the parts' shapes into one multi-part shape, keeping inner borders. */
 export async function buildCombinedCollection(defs: CombinedRegionDef[]): Promise<RegionCollection> {
   const types = [...new Set(defs.flatMap((d) => d.parts.map((p) => p.type)).filter((t) => t !== "custom"))];
