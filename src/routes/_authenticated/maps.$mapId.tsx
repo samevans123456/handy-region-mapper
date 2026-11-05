@@ -3,7 +3,7 @@ import { ClientOnly } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { lazy, Suspense, useState } from "react";
 import { toast } from "sonner";
-import { Plus, Upload, ListPlus, Pencil, Trash2, Table2, Share2 } from "lucide-react";
+import { Plus, Upload, ListPlus, Pencil, Trash2, Table2, Share2, Combine } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { LayerPanel } from "@/components/map/LayerPanel";
 import { InfoPanel, FieldValue } from "@/components/map/InfoPanel";
 import { EntryDialog } from "@/components/map/EntryDialog";
+import { CombinedRegionsDialog } from "@/components/map/CombinedRegionsDialog";
 import { ShareDialog } from "@/components/map/ShareDialog";
 import { FieldsDialog } from "@/components/map/FieldsDialog";
 import { CsvImportDialog } from "@/components/map/CsvImportDialog";
@@ -53,6 +54,8 @@ function Editor() {
   const [fieldsLayer, setFieldsLayer] = useState<LayerRow | null>(null);
   const [dataLayer, setDataLayer] = useState<LayerRow | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
+  const [combinedOpen, setCombinedOpen] = useState(false);
+  const [combinedVersion, setCombinedVersion] = useState(0);
 
   if (isLoading) return <div className="p-8 text-muted-foreground">Loading map…</div>;
   if (error || !data)
@@ -176,13 +179,16 @@ function Editor() {
             <Button variant="outline" className="col-span-2" onClick={() => setCsvOpen(true)}>
               <Upload /> Excel template / upload file
             </Button>
+            <Button variant="outline" className="col-span-2" onClick={() => setCombinedOpen(true)}>
+              <Combine /> Combined regions
+            </Button>
           </div>
           <p className="border-t border-border px-4 py-2 text-sm text-muted-foreground">Test, Learn, Grow · Source: ONS</p>
         </aside>
         <main className="relative min-w-0 flex-1 bg-muted">
           <ClientOnly fallback={<div className="p-6 text-muted-foreground">Loading map…</div>}>
             <Suspense fallback={<div className="p-6 text-muted-foreground">Loading map…</div>}>
-              <MapCanvas layers={layers} entries={entries} selectedIds={selectedIds} onSelect={setSelectedIds} />
+              <MapCanvas layers={layers} entries={entries} selectedIds={selectedIds} onSelect={setSelectedIds} combinedVersion={combinedVersion} />
             </Suspense>
           </ClientOnly>
           {selectedEntries.length > 0 && (
@@ -210,6 +216,7 @@ function Editor() {
       <CsvImportDialog open={csvOpen} onOpenChange={setCsvOpen} mapId={mapId} mapName={map.name} layers={layers} fields={fields} onDone={refresh} />
       <TableEditor open={tableOpen} onOpenChange={setTableOpen} mapId={mapId} layers={layers} fields={fields} onDone={refresh} />
       <FieldsDialog layer={fieldsLayer} fields={fields} onOpenChange={(o) => !o && setFieldsLayer(null)} onSaved={refresh} />
+      <CombinedRegionsDialog open={combinedOpen} onOpenChange={setCombinedOpen} onChanged={() => setCombinedVersion((v) => v + 1)} />
       <ShareDialog open={shareOpen} onOpenChange={setShareOpen} mapId={mapId} />
 
       <Sheet open={!!dataLayer} onOpenChange={(o) => !o && setDataLayer(null)}>
