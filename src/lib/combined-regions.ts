@@ -29,7 +29,7 @@ export async function fetchCombinedRegions(): Promise<CombinedRegionRow[]> {
   return res.data.map((r) => ({ ...r, parts: cleanParts(r.parts) }));
 }
 
-export async function saveCombinedRegion(r: { id?: string; name: string; parts: CombinedRegionDef["parts"] }) {
+export async function saveCombinedRegion(r: { id?: string | undefined; name: string; parts: CombinedRegionDef["parts"] }) {
   const parts = cleanParts(r.parts);
   if (!r.name.trim()) throw new Error("Give the combined region a name.");
   if (parts.length < 2) throw new Error("Choose at least two regions to combine.");
