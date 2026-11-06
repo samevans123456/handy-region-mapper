@@ -3,8 +3,8 @@ vi.mock("@/integrations/supabase/client", () => ({ supabase: {} }));
 import { cleanParts } from "@/lib/combined-regions";
 import { buildCombinedCollection, parseRegionType } from "@/lib/regions";
 
-describe("combined regions", () => {
-  it("keeps parts of different types, dropping duplicates and nested combined regions", () => {
+describe("Custom Regions", () => {
+  it("keeps parts of different types, dropping duplicates and nested Custom Regions", () => {
     expect(cleanParts([
       { type: "lad", code: "E06000045" },
       { type: "county", code: "E10000014" },

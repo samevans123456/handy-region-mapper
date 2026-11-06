@@ -136,7 +136,7 @@ export function parseRegionType(value: string): RegionTypeId | undefined {
   const v = value.toLowerCase().trim();
   if (!v) return undefined;
   if (isRegionType(v)) return v;
-  if (/combined region|hybrid|custom/.test(v)) return "custom";
+  if (/custom|combined region|hybrid/.test(v)) return "custom";
   if (/constituen|pcon|westminster/.test(v)) return "pcon";
   if (/unitary|\bua\b/.test(v)) return "ua";
   if (/mayor|combined|msa|mca|gla|cauth|strategic/.test(v)) return "mayoral";
