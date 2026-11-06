@@ -22,7 +22,10 @@ export function AboutPanel({
       className="absolute left-3 top-3 z-20 max-h-[calc(100%-1.5rem)] w-[min(26rem,calc(100vw-1.5rem))] overflow-y-auto border border-border bg-card p-5 shadow-lg"
     >
       <div className="flex items-start justify-between gap-3">
-        <h1 className="text-lg leading-snug">Test, Learn and Grow – Where the Work Is</h1>
+        <div>
+          <h1 className="text-lg leading-snug">Test, Learn and Grow – Where the Work Is</h1>
+          <p className="mt-2 text-sm text-muted-foreground">Prototype - Includes AI generated summaries</p>
+        </div>
         <Button
           variant="ghost"
           size="icon"
