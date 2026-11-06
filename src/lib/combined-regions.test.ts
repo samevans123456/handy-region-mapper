@@ -31,7 +31,9 @@ describe("combined regions", () => {
     expect(fc.features[0]!.geometry.type === "MultiPolygon" && fc.features[0]!.geometry.coordinates).toHaveLength(3);
   });
 
-  it("recognises 'Combined region' as a region type label", () => {
+  it("recognises Custom Region labels and the legacy Combined region label", () => {
+    expect(parseRegionType("Custom Region")).toBe("custom");
+    expect(parseRegionType("Custom Regions")).toBe("custom");
     expect(parseRegionType("Combined region")).toBe("custom");
   });
 });

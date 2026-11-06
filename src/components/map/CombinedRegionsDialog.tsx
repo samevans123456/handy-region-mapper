@@ -42,9 +42,9 @@ export function CombinedRegionsDialog({ open, onOpenChange, onChanged }: {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Combined regions</DialogTitle>
+          <DialogTitle>Custom Regions</DialogTitle>
           <DialogDescription>
-            Build your own region by combining others, of any type. Use it like any other region under “Combined region”, in all your maps.
+            Build your own region by combining others, of any type. Use it like any other region under “Custom Region”, in all your maps.
           </DialogDescription>
         </DialogHeader>
         {editing ? (
