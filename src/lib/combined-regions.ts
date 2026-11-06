@@ -31,7 +31,7 @@ export async function fetchCombinedRegions(): Promise<CombinedRegionRow[]> {
 
 export async function saveCombinedRegion(r: { id?: string | undefined; name: string; parts: CombinedRegionDef["parts"] }) {
   const parts = cleanParts(r.parts);
-  if (!r.name.trim()) throw new Error("Give the combined region a name.");
+  if (!r.name.trim()) throw new Error("Give the Custom Region a name.");
   if (parts.length < 2) throw new Error("Choose at least two regions to combine.");
   const res = r.id
     ? await supabase.from("custom_regions").update({ name: r.name.trim(), parts, updated_at: new Date().toISOString() }).eq("id", r.id)

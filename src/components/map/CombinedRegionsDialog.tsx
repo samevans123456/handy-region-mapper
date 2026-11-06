@@ -42,9 +42,9 @@ export function CombinedRegionsDialog({ open, onOpenChange, onChanged }: {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Combined regions</DialogTitle>
+          <DialogTitle>Custom Regions</DialogTitle>
           <DialogDescription>
-            Build your own region by combining others, of any type. Use it like any other region under “Combined region”, in all your maps.
+            Build your own region by combining others, of any type. Use it like any other region under “Custom Region”, in all your maps.
           </DialogDescription>
         </DialogHeader>
         {editing ? (
@@ -55,7 +55,7 @@ export function CombinedRegionsDialog({ open, onOpenChange, onChanged }: {
           />
         ) : (
           <div className="space-y-3">
-            {regions.length === 0 && <p className="text-muted-foreground">No combined regions yet.</p>}
+            {regions.length === 0 && <p className="text-muted-foreground">No Custom Regions yet.</p>}
             <ul className="divide-y divide-border border border-border">
               {regions.map((r) => (
                 <li key={r.id} className="flex items-center gap-2 px-3 py-2">
@@ -74,7 +74,7 @@ export function CombinedRegionsDialog({ open, onOpenChange, onChanged }: {
                 </li>
               ))}
             </ul>
-            <Button onClick={() => setEditing({ name: "", parts: [] })}><Plus /> New combined region</Button>
+            <Button onClick={() => setEditing({ name: "", parts: [] })}><Plus /> New Custom Region</Button>
           </div>
         )}
       </DialogContent>
@@ -106,7 +106,7 @@ function Editor({ value, onCancel, onSaved }: {
 
   async function save() {
     setSaving(true);
-    try { await saveCombinedRegion({ id: value.id, name, parts }); toast.success("Combined region saved"); onSaved(); }
+    try { await saveCombinedRegion({ id: value.id, name, parts }); toast.success("Custom Region saved"); onSaved(); }
     catch (e) { toast.error((e as Error).message); }
     finally { setSaving(false); }
   }
@@ -145,7 +145,7 @@ function Editor({ value, onCancel, onSaved }: {
       </div>
       <div className="flex justify-end gap-2">
         <Button variant="outline" onClick={onCancel}>Back</Button>
-        <Button onClick={save} disabled={saving}>{saving ? "Saving…" : "Save combined region"}</Button>
+        <Button onClick={save} disabled={saving}>{saving ? "Saving…" : "Save Custom Region"}</Button>
       </div>
     </div>
   );

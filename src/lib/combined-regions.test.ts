@@ -3,8 +3,8 @@ vi.mock("@/integrations/supabase/client", () => ({ supabase: {} }));
 import { cleanParts } from "@/lib/combined-regions";
 import { buildCombinedCollection, parseRegionType } from "@/lib/regions";
 
-describe("combined regions", () => {
-  it("keeps parts of different types, dropping duplicates and nested combined regions", () => {
+describe("Custom Regions", () => {
+  it("keeps parts of different types, dropping duplicates and nested Custom Regions", () => {
     expect(cleanParts([
       { type: "lad", code: "E06000045" },
       { type: "county", code: "E10000014" },
@@ -31,7 +31,9 @@ describe("combined regions", () => {
     expect(fc.features[0]!.geometry.type === "MultiPolygon" && fc.features[0]!.geometry.coordinates).toHaveLength(3);
   });
 
-  it("recognises 'Combined region' as a region type label", () => {
+  it("recognises Custom Region labels and the legacy Combined region label", () => {
+    expect(parseRegionType("Custom Region")).toBe("custom");
+    expect(parseRegionType("Custom Regions")).toBe("custom");
     expect(parseRegionType("Combined region")).toBe("custom");
   });
 });

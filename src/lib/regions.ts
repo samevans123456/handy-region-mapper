@@ -19,7 +19,7 @@ export const REGION_TYPES: RegionTypeDef[] = [
   { id: "mayoral", label: "Strategic Authority", short: "SA", source: "20 strategic authorities (June 2026 article inventory) plus published proposed areas; ONS BGC district boundaries" },
   { id: "ua", label: "Unitary authority", short: "UA", source: "ONS Local Authority Districts (May 2026): English unitaries, London and metropolitan boroughs, plus Welsh, Scottish and NI councils" },
   { id: "county", label: "County council", short: "County", source: "ONS County (CTYUA) codes merged from Local Authority Districts (May 2026) BGC boundaries; 21 two-tier county councils" },
-  { id: "custom", label: "Combined region", short: "Combined", source: "Your own regions built by combining other regions" },
+  { id: "custom", label: "Custom Region", short: "Custom", source: "Your own regions built by combining other regions" },
 ];
 
 export const regionTypeLabel = (id: string) =>
@@ -136,7 +136,7 @@ export function parseRegionType(value: string): RegionTypeId | undefined {
   const v = value.toLowerCase().trim();
   if (!v) return undefined;
   if (isRegionType(v)) return v;
-  if (/combined region|hybrid|custom/.test(v)) return "custom";
+  if (/custom|combined region|hybrid/.test(v)) return "custom";
   if (/constituen|pcon|westminster/.test(v)) return "pcon";
   if (/unitary|\bua\b/.test(v)) return "ua";
   if (/mayor|combined|msa|mca|gla|cauth|strategic/.test(v)) return "mayoral";

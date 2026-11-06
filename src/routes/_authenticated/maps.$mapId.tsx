@@ -180,7 +180,7 @@ function Editor() {
               <Upload /> Excel template / upload file
             </Button>
             <Button variant="outline" className="col-span-2" onClick={() => setCombinedOpen(true)}>
-              <Combine /> Combined regions
+              <Combine /> Custom Regions
             </Button>
           </div>
           <p className="border-t border-border px-4 py-2 text-sm text-muted-foreground">Test, Learn, Grow · Source: ONS</p>
